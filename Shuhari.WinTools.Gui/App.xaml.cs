@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using Shuhari.Library.Common.Utils;
 
 namespace Shuhari.WinTools.Gui
 {
@@ -13,5 +10,29 @@ namespace Shuhari.WinTools.Gui
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Exception != null)
+            {
+                e.Dispatcher.Invoke(() => ReportException(e.Exception));
+                e.Handled = true;
+            }
+        }
+
+        private void ReportException(Exception exp)
+        {
+            MessageBox.Show(exp.GetFullTrace());
+            LogException(exp);
+        }
+
+        internal static void LogException(Exception exp)
+        {
+            exp.LogToFile(@"{base}\error.log");
+        }
     }
 }
