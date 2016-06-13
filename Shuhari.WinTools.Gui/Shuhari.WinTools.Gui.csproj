@@ -66,6 +66,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Views\BookDownloadView.xaml.cs">
+      <DependentUpon>BookDownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BookManageView.xaml.cs">
+      <DependentUpon>BookManageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CleanDirView.xaml.cs">
+      <DependentUpon>CleanDirView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DiskSpaceView.xaml.cs">
+      <DependentUpon>DiskSpaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FeatureView.cs" />
+    <Compile Include="Views\RenameFileView.xaml.cs">
+      <DependentUpon>RenameFileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ServiceManageView.xaml.cs">
+      <DependentUpon>ServiceManageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SysOptimizeView.xaml.cs">
+      <DependentUpon>SysOptimizeView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -81,8 +104,37 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\BookDownloadView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BookManageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CleanDirView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DiskSpaceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RenameFileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ServiceManageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SysOptimizeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\FeatureModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -100,6 +152,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\book-32.png" />
+    <Resource Include="Resources\clean-32.png" />
+    <Resource Include="Resources\disk-32.png" />
+    <Resource Include="Resources\error-16.png" />
+    <Resource Include="Resources\rename-32.png" />
+    <Resource Include="Resources\run-16.png" />
+    <Resource Include="Resources\success-16.png" />
+    <Resource Include="Resources\sysopt-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

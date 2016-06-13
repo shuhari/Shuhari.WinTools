@@ -1,0 +1,8 @@
+﻿<local:FeatureView x:Class="Shuhari.WinTools.Gui.Views.DiskSpaceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views">
+    <Grid>
+            
+    </Grid>
+</local:FeatureView>

@@ -1,0 +1,51 @@
+﻿[
+    {
+        "displayName": "系统优化",
+        "description": "系统优化",
+        "iconPath": "Resources/sysopt-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.SysOptimize.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.SysOptimizeView"
+    },
+    {
+        "displayName": "磁盘空间查看",
+        "description": "磁盘空间查看",
+        "iconPath": "Resources/disk-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.DiskSpace.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.DiskSpaceView"
+    },
+    {
+        "displayName": "目录清理",
+        "description": "目录清理",
+        "iconPath": "Resources/clean-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.CleanDir.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.CleanDirView"
+    },
+    {
+        "displayName": "文件重命名",
+        "description": "文件重命名",
+        "iconPath": "Resources/rename-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.RenameFile.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.RenameFileView"
+    },
+    {
+        "displayName": "书籍管理",
+        "description": "书籍管理",
+        "iconPath": "Resources/clean-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.BookManage.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.BookManageView"
+    },
+    {
+        "displayName": "服务管理",
+        "description": "服务管理",
+        "iconPath": "Resources/clean-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.ServiceManage.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.ServiceManageView"
+    },
+    {
+        "displayName": "书籍下载",
+        "description": "书籍下载",
+        "iconPath": "Resources/clean-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.BookDownload.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.BookDownloadView"
+    }
+]

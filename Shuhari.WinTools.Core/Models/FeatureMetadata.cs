@@ -12,5 +12,11 @@ namespace Shuhari.WinTools.Core.Models
 
         [JsonProperty("iconPath")]
         public string IconPath { get; set; }
+
+        [JsonProperty("featureClass")]
+        public string FeatureClass { get; set; }
+
+        [JsonProperty("viewClass")]
+        public string ViewClass { get; set; }
     }
 }

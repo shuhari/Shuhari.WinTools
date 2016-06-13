@@ -1,4 +1,6 @@
-﻿namespace Shuhari.WinTools.Core.Features
+﻿using Shuhari.WinTools.Core.Models;
+
+namespace Shuhari.WinTools.Core.Features
 {
     /// <summary>
     /// 功能项
@@ -7,7 +9,11 @@
     {
         public BaseFeature()
         {
-            LoadMetadata();
         }
+
+        /// <summary>
+        /// Metadata
+        /// </summary>
+        public FeatureMetadata Metadata { get; internal set; }
     }
 }

@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Shuhari.WinTools.Gui.Models;
+using Shuhari.WinTools.Gui.Services;
 
 namespace Shuhari.WinTools.Gui
 {
@@ -23,6 +13,27 @@ namespace Shuhari.WinTools.Gui
         public MainWindow()
         {
             InitializeComponent();
+
+            Loaded += MainWindow_Loaded;
+        }
+
+        private FeatureModel[] _features;
+        private ApplicationService _service;
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            _service = new ApplicationService();
+            _features = _service.CreateModels(featureStack);
+            featureList.ItemsSource = _features;
+        }
+
+        private void featureList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var fm = featureList.SelectedItem as FeatureModel;
+            if (fm != null && fm.View != null)
+            {
+                featureStack.ActiveChild = fm.View;
+            }
         }
     }
 }

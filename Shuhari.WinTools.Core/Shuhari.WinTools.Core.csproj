@@ -49,12 +49,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Features\BaseFeature.cs" />
+    <Compile Include="Features\BookDownload\Feature.cs" />
+    <Compile Include="Features\BookManage\Feature.cs" />
+    <Compile Include="Features\CleanDir\Feature.cs" />
+    <Compile Include="Features\DiskSpace\Feature.cs" />
+    <Compile Include="Features\RenameFile\Feature.cs" />
+    <Compile Include="Features\ServiceManage\Feature.cs" />
+    <Compile Include="Features\SysOptimize\Feature.cs" />
     <Compile Include="Models\FeatureMetadata.cs" />
     <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FeatureService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Resource Include="Resources\features.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Attributes\" />
