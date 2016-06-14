@@ -2,7 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views">
-    <Grid>
-            
-    </Grid>
+    
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Content="目录:" Margin="3" Grid.Column="0" />
+            <TextBox x:Name="txtDirName" IsReadOnly="True" Background="#CCC" Grid.Column="1" Margin="3" />
+            <Button x:Name="btnBrowse" Content="浏览..." Margin="3" Grid.Column="2" Click="btnBrowse_Click" />
+            <Button x:Name="btnClean" Content="清理" Margin="3" Grid.Column="3" Click="btnClean_Click" />
+        </Grid>
+        <ListBox x:Name="logList">
+        </ListBox>
+    </DockPanel>
+
 </local:FeatureView>
