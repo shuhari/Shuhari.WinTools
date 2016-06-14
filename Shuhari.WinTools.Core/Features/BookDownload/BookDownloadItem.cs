@@ -1,22 +1,15 @@
-﻿using System.ComponentModel;
+﻿using Shuhari.Library.Common.ComponentModel;
 
 namespace Shuhari.WinTools.Core.Features.BookDownload
 {
-    public class BookDownloadItem : INotifyPropertyChanged
+    public class BookDownloadItem : Observable
     {
         private bool _selected = false;
 
         public bool Selected
         {
             get { return _selected; }
-            set
-            {
-                if (_selected != value)
-                {
-                    _selected = value;
-                    NotifyProperty("Selected");
-                }
-            }
+            set { SetProperty(nameof(Selected), ref _selected, value); }
         }
 
         public string Title { get; set; }
@@ -45,14 +38,6 @@ namespace Shuhari.WinTools.Core.Features.BookDownload
                 DownloadUrl = this.DownloadUrl,
                 PageUrl = this.PageUrl
             };
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyProperty(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
     }
 }

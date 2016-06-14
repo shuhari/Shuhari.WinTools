@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Shuhari.Library.Common.ComponentModel;
 
 namespace Shuhari.WinTools.Core.Features.SysOptimize
 {
-    public class OptimizeTaskItem : INotifyPropertyChanged
+    public class OptimizeTaskItem : Observable
     {
         public OptimizeTaskItem(OptimizeTask task)
         {
@@ -21,22 +21,7 @@ namespace Shuhari.WinTools.Core.Features.SysOptimize
         public string ImagePath
         {
             get { return _imagePath; }
-            set
-            {
-                if (_imagePath != value)
-                {
-                    _imagePath = value;
-                    NotifyProperty("ImagePath");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyProperty(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            set { SetProperty(nameof(ImagePath), ref _imagePath, value); }
         }
     }
 }

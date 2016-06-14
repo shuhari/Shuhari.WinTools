@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using Shuhari.Library.Common.Utils;
 using Shuhari.Library.Wpf;
+using Shuhari.WinTools.Core.Features.RenameFile;
 
 namespace Shuhari.WinTools.Gui.Views
 {
@@ -141,46 +142,6 @@ namespace Shuhari.WinTools.Gui.Views
         public int Value { get; private set; }
     }
 
-    class RenameItem : INotifyPropertyChanged
-    {
-        public RenameItem(string currentName, string newName, string dirName)
-        {
-            this.CurrentName = currentName;
-            this.NewName = newName;
-            this.DirectoryName = dirName;
-
-            _selected = true;
-        }
-
-        private bool _selected;
-
-        public string CurrentName { get; private set; }
-
-        public string NewName { get; private set; }
-
-        public string DirectoryName { get; private set; }
-
-        public bool Selected
-        {
-            get { return _selected; }
-            set
-            {
-                if (_selected != value)
-                {
-                    _selected = value;
-                    NotifyProperty("Selected");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyProperty(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
-    }
 
     class Option
     {

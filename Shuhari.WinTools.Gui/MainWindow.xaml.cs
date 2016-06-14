@@ -25,6 +25,7 @@ namespace Shuhari.WinTools.Gui
             _service = new ApplicationService();
             _features = _service.CreateModels(featureStack);
             featureList.ItemsSource = _features;
+            featureStack.ActiveChild = null;
         }
 
         private void featureList_SelectionChanged(object sender, SelectionChangedEventArgs e)

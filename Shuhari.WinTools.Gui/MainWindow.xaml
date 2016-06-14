@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:Shuhari.WinTools.Gui"
         xmlns:sw="http://github.com/shuhari/shuhari.library/wpf"
         Title="Shuhari's Tools for Windows"
-        SizeToContent="WidthAndHeight">
+        MinWidth="800" MinHeight="600">
 
     <Window.Resources>
         <DataTemplate x:Key="featureTpl">

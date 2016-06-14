@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 using Microsoft.Win32;
-using Shuhari.WinTools.Core.Utils;
+using Shuhari.Library.Common.Win32;
 
 namespace Shuhari.WinTools.Core.Features.SysOptimize
 {
