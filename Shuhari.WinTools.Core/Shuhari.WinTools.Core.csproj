@@ -67,6 +67,7 @@
     <Compile Include="Features\DiskSpace\FileSizeItemBase.cs" />
     <Compile Include="Features\RenameFile\Feature.cs" />
     <Compile Include="Features\ServiceManage\Feature.cs" />
+    <Compile Include="Features\ServiceManage\ServiceItem.cs" />
     <Compile Include="Features\SysOptimize\Feature.cs" />
     <Compile Include="Features\SysOptimize\OptimizeTask.cs" />
     <Compile Include="Features\SysOptimize\OptimizeTaskItem.cs" />
