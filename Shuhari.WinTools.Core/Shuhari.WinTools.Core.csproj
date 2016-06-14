@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,10 +57,22 @@
     <Compile Include="Features\RenameFile\Feature.cs" />
     <Compile Include="Features\ServiceManage\Feature.cs" />
     <Compile Include="Features\SysOptimize\Feature.cs" />
+    <Compile Include="Features\SysOptimize\OptimizeTask.cs" />
+    <Compile Include="Features\SysOptimize\OptimizeTaskItem.cs" />
+    <Compile Include="Features\SysOptimize\OptimizeTaskStatus.cs" />
+    <Compile Include="Features\SysOptimize\OptimizeTaskStatusEventArgs.cs" />
+    <Compile Include="Features\SysOptimize\SetAcdseeTask.cs" />
+    <Compile Include="Features\SysOptimize\SetExplorerTask.cs" />
+    <Compile Include="Features\SysOptimize\SetPowerCfgTask.cs" />
+    <Compile Include="Features\SysOptimize\SetRemoteDesktopTask.cs" />
+    <Compile Include="Features\SysOptimize\SetServiceTask.cs" />
+    <Compile Include="Features\SysOptimize\SetSysStartupTask.cs" />
+    <Compile Include="Features\SysOptimize\SetTempDirTask.cs" />
     <Compile Include="Models\FeatureMetadata.cs" />
     <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FeatureService.cs" />
+    <Compile Include="Utils\RegistryUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

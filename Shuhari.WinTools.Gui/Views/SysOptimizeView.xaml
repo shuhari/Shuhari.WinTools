@@ -2,9 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views">
-    
-    <Grid>
-            
-    </Grid>
-    
+
+    <local:FeatureView.Resources>
+        <DataTemplate x:Key="taskItemTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Image Width="16" Height="16" Stretch="None" Source="{Binding ImagePath}" />
+                <TextBlock Text="{Binding DisplayName}" />
+            </StackPanel>
+        </DataTemplate>
+    </local:FeatureView.Resources>
+
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top">
+            <Button x:Name="btnStart" Content="开始" Click="btnStart_Click" />
+        </ToolBar>
+        <ListBox x:Name="taskList" ItemTemplate="{StaticResource taskItemTemplate}">
+        </ListBox>
+    </DockPanel>
+
 </local:FeatureView>
