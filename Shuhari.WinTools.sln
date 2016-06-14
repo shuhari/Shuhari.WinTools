@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuhari.WinTools.Gui", "Shu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuhari.WinTools.UnitTests", "Shuhari.WinTools.UnitTests\Shuhari.WinTools.UnitTests.csproj", "{B14D0FDF-B9BB-4585-AD39-DB5729E2B038}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{CAF86018-3103-4313-80F0-529731B2406C}"
+	ProjectSection(SolutionItems) = preProject
+		Lib\Aga.Controls.dll = Lib\Aga.Controls.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

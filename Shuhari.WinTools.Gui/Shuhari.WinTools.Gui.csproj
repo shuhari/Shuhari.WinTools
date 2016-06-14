@@ -38,6 +38,9 @@
     <ApplicationIcon>Resources\App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aga.Controls">
+      <HintPath>..\Lib\Aga.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Shuhari.Library.Common, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Shuhari.Library.Common.0.1.6\lib\net45\Shuhari.Library.Common.dll</HintPath>
       <Private>True</Private>
