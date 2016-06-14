@@ -2,7 +2,85 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views">
-    <Grid>
-            
-    </Grid>
+
+    <local:FeatureView.Resources>
+        <DataTemplate x:Key="selectTemplate">
+            <CheckBox Margin="3" IsChecked="{Binding Selected, Mode=TwoWay}" />
+        </DataTemplate>
+    </local:FeatureView.Resources>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="目录" />
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="txtDirName" Grid.Column="0" Margin="3" Text="E:\h\ha" />
+                <Button x:Name="btnBrowse" Content="..." Grid.Column="1" Margin="3" Click="btnBrowse_Click" />
+            </Grid>
+            <Label Grid.Row="1" Grid.Column="0" Content="选项1" />
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                <Label Content="文字:" Margin="3" />
+                <TextBox x:Name="txtOption1" Width="250" Margin="3" Text="\[\d{6}\]" />
+                <Label Content="类型:" Margin="3" />
+                <ComboBox x:Name="cboType1" Width="100" Margin="3" 
+                          DisplayMemberPath="Name" SelectedValuePath="Value" />
+                <Label Content="替换为:" Margin="3" />
+                <TextBox x:Name="txtReplace1" Width="250" Margin="3" />
+            </StackPanel>
+            <Label Grid.Row="2" Grid.Column="0" Content="选项2" />
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                <Label Content="文字:" Margin="3" />
+                <TextBox x:Name="txtOption2" Width="250" Margin="3" />
+                <Label Content="类型:" Margin="3" />
+                <ComboBox x:Name="cboType2" Width="100" Margin="3" 
+                          DisplayMemberPath="Name" SelectedValuePath="Value" />
+                <Label Content="替换为:" Margin="3" />
+                <TextBox x:Name="txtReplace2" Width="250" Margin="3" />
+            </StackPanel>
+            <Label Grid.Row="3" Grid.Column="0" Content="选项3" />
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                <Label Content="文字:" Margin="3" />
+                <TextBox x:Name="txtOption3" Width="250" Margin="3" />
+                <Label Content="类型:" Margin="3" />
+                <ComboBox x:Name="cboType3" Width="100" Margin="3" 
+                          DisplayMemberPath="Name" SelectedValuePath="Value" />
+                <Label Content="替换为:" Margin="3" />
+                <TextBox x:Name="txtReplace3" Width="250" Margin="3" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                        Grid.Row="4" Grid.ColumnSpan="2">
+                <CheckBox x:Name="chkApplyToFolder" Content="目录" Margin="3" />
+                <CheckBox x:Name="chkApplyToFile" Content="文件" Margin="3" IsChecked="True" />
+                <Button x:Name="btnPreview" Content="预览" Margin="3" Click="btnPreview_Click" />
+                <Button x:Name="btnApply" Content="应用" Margin="3" Click="btnApply_Click" />
+            </StackPanel>
+        </Grid>
+        <ListView x:Name="resultList">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Width="32" CellTemplate="{StaticResource selectTemplate}" />
+                        <GridViewColumn Header="当前名称" DisplayMemberBinding="{Binding CurrentName}" Width="300" />
+                        <GridViewColumn Header="新名称" DisplayMemberBinding="{Binding NewName}" Width="300" />
+                        <GridViewColumn Header="目录" DisplayMemberBinding="{Binding DirectoryName}" Width="400" />
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+    
 </local:FeatureView>

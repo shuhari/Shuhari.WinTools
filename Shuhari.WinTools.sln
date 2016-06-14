@@ -18,6 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{CAF86018-310
 		Lib\Aga.Controls.dll = Lib\Aga.Controls.dll
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{E6FB91F5-1828-416E-B773-2756C290BB3C}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\TODO = Misc\TODO
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
