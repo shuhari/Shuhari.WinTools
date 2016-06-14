@@ -33,6 +33,10 @@
     <Reference Include="Aga.Controls">
       <HintPath>..\Lib\Aga.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -57,7 +61,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Features\BaseFeature.cs" />
+    <Compile Include="Features\BookDownload\BookDL.cs" />
+    <Compile Include="Features\BookDownload\BookDownloadContext.cs" />
+    <Compile Include="Features\BookDownload\BookDownloadItem.cs" />
+    <Compile Include="Features\BookDownload\BookSiteBase.cs" />
     <Compile Include="Features\BookDownload\Feature.cs" />
+    <Compile Include="Features\BookDownload\FoxEBook.cs" />
+    <Compile Include="Features\BookDownload\HtmlHelper.cs" />
+    <Compile Include="Features\BookDownload\IBookSite.cs" />
     <Compile Include="Features\BookManage\Feature.cs" />
     <Compile Include="Features\CleanDir\Feature.cs" />
     <Compile Include="Features\DiskSpace\DirectorySizeItem.cs" />
