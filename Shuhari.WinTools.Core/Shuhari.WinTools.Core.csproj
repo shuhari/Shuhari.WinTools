@@ -69,6 +69,7 @@
     <Compile Include="Features\BookDownload\FoxEBook.cs" />
     <Compile Include="Features\BookDownload\HtmlHelper.cs" />
     <Compile Include="Features\BookDownload\IBookSite.cs" />
+    <Compile Include="Features\BookManage\BookItem.cs" />
     <Compile Include="Features\BookManage\Feature.cs" />
     <Compile Include="Features\CleanDir\Feature.cs" />
     <Compile Include="Features\DiskSpace\DirectorySizeItem.cs" />

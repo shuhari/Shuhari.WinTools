@@ -44,6 +44,36 @@
                     </ListView>
                 </DockPanel>
             </TabItem>
+            <TabItem Header="清理文件名">
+                <DockPanel>
+                    <ToolBar DockPanel.Dock="Top">
+                        <Button x:Name="btnCleanApply" Content="Apply" Click="btnCleanApply_Click" />
+                    </ToolBar>
+                    <StatusBar DockPanel.Dock="Bottom">
+                        <StatusBarItem x:Name="statusText" Content=" " />
+                    </StatusBar>
+                    <ListView x:Name="bookList">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="32">
+                                        <GridViewColumn.Header>
+                                            <CheckBox x:Name="chkSelectAll" Click="chkSelectAll_Click" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Old Name" DisplayMemberBinding="{Binding OldName}" Width="400" />
+                                    <GridViewColumn Header="New Name" DisplayMemberBinding="{Binding NewName}" Width="400" />
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
         </TabControl>
     </DockPanel>
 

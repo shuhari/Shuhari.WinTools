@@ -3,10 +3,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using Shuhari.Library.Common.Utils;
 using Shuhari.Library.Wpf;
+using Shuhari.WinTools.Core.Features.BookManage;
 
 namespace Shuhari.WinTools.Gui.Views
 {
@@ -23,11 +25,30 @@ namespace Shuhari.WinTools.Gui.Views
         }
 
         private ObservableCollection<TrimItem> _items;
+        private ObservableCollection<BookItem> _books;
 
         private void BookManageView_Loaded(object sender, RoutedEventArgs e)
         {
             _items = new ObservableCollection<TrimItem>();
             list.ItemsSource = _items;
+
+            _books = new ObservableCollection<BookItem>();
+            bookList.ItemsSource = _books;
+
+            foreach (var fi in new DirectoryInfo(DIRNAME).GetFiles())
+            {
+                var newName = GetNewName(fi.Name);
+                if (newName != null && newName != fi.Name)
+                {
+                    var book = new BookItem
+                    {
+                        OldName = fi.Name,
+                        NewName = newName,
+                        Selected = true
+                    };
+                    _books.Add(book);
+                }
+            }
         }
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
@@ -150,6 +171,49 @@ namespace Shuhari.WinTools.Gui.Views
             foreach (var item in _items)
             {
                 item.Apply();
+            }
+        }
+
+        const string DIRNAME = @"D:\Books\Upload\baiduyun";
+
+        private string GetNewName(string fileName)
+        {
+            var re = new Regex(@"\.(.{10}\.)(pdf|epub)$");
+            var match = re.Match(fileName);
+            if (match.Success)
+                return fileName.Replace(match.Groups[1].Value, "");
+
+            re = new Regex(@"\.(.{10}_CODE)\.zip$");
+            match = re.Match(fileName);
+            if (match.Success)
+                return fileName.Replace(match.Groups[1].Value, "CODE");
+
+            return null;
+        }
+
+        private void btnCleanApply_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var book in _books.Where(b => b.Selected))
+            {
+                var oldPath = Path.Combine(DIRNAME, book.OldName);
+                var newPath = Path.Combine(DIRNAME, book.NewName);
+                try
+                {
+                    Directory.Move(oldPath, newPath);
+                }
+                catch (Exception exp)
+                {
+                    statusText.Content = exp.Message;
+                }
+            }
+        }
+
+        private void chkSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            var isChecked = (bool)chkSelectAll.IsChecked;
+            foreach (var book in _books)
+            {
+                book.Selected = isChecked;
             }
         }
     }
