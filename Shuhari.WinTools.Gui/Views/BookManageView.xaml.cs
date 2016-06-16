@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,9 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Shuhari.Library.Common.IO.Compression;
 using Shuhari.Library.Common.Utils;
 using Shuhari.Library.Wpf;
 using Shuhari.WinTools.Core.Features.BookManage;
+using BookManageFeature = Shuhari.WinTools.Core.Features.BookManage.Feature;
 
 namespace Shuhari.WinTools.Gui.Views
 {
@@ -24,31 +27,8 @@ namespace Shuhari.WinTools.Gui.Views
             Loaded += BookManageView_Loaded;
         }
 
-        private ObservableCollection<TrimItem> _items;
-        private ObservableCollection<BookItem> _books;
-
         private void BookManageView_Loaded(object sender, RoutedEventArgs e)
         {
-            _items = new ObservableCollection<TrimItem>();
-            list.ItemsSource = _items;
-
-            _books = new ObservableCollection<BookItem>();
-            bookList.ItemsSource = _books;
-
-            foreach (var fi in new DirectoryInfo(DIRNAME).GetFiles())
-            {
-                var newName = GetNewName(fi.Name);
-                if (newName != null && newName != fi.Name)
-                {
-                    var book = new BookItem
-                    {
-                        OldName = fi.Name,
-                        NewName = newName,
-                        Selected = true
-                    };
-                    _books.Add(book);
-                }
-            }
         }
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
@@ -121,99 +101,92 @@ namespace Shuhari.WinTools.Gui.Views
             }
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        private void btnBrowseDownloadDir_Click(object sender, RoutedEventArgs e)
         {
-            string path = txtDir.Text.Trim();
+            var path = this.BrowseForFolder();
             if (path.IsNotBlank())
-            {
-                _items.Clear();
-                SearchDir(new DirectoryInfo(path));
-            }
+                txtDownloadDir.Text = path;
         }
 
-        private void SearchDir(DirectoryInfo dir)
+        private void btnProcessDownload_Click(object sender, RoutedEventArgs e)
         {
-            var re = new Regex(@"(\.\d{10})\.(pdf|epub)$");
-            foreach (var fi in dir.GetFiles())
+            var path = txtDownloadDir.Text.Trim();
+            if (path.IsBlank() || !Directory.Exists(path))
             {
-                var match = re.Match(fi.Name);
-                if (match.Success)
+                MessageBox.Show("请选择目录");
+                return;
+            }
+
+            var processWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true
+            };
+            processWorker.DoWork += ProcessWorker_DoWork;
+            processWorker.RunWorkerCompleted += ProcessWorker_RunWorkerCompleted;
+            processWorker.ProgressChanged += ProcessWorker_ProgressChanged;
+            btnProcessDownload.IsEnabled = false;
+            processWorker.RunWorkerAsync(path);
+        }
+
+        private void ProcessWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+        }
+
+        private void ProcessWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnProcessDownload.IsEnabled = true;
+        }
+
+        private void ProcessWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var feature = (BookManageFeature)Feature;
+
+            try
+            {
+                var path = (string)e.Argument;
+                var extensions = new string[] { ".pdf", ".epub", ".mobi", ".azw4", "azw3" };
+                // 解压rar文件
+                // 如果解压成功则删除原rar文件
+                var cmd = new RarCommand().SetOverwriteMode(RarOverwriteMode.Overwrite);
+                foreach (var rarFile in new DirectoryInfo(path).GetFiles("*.rar"))
                 {
-                    var item = new TrimItem(fi);
-                    var part = match.Groups[1].Value;
-                    item.NewName = fi.Name.Replace(part, "");
-                    _items.Add(item);
+                    cmd.Decompress(rarFile.FullName, path).Exec();
+                    bool extractOk = extensions.Any(ext => File.Exists(Path.ChangeExtension(rarFile.FullName, ext)));
+                    if (extractOk)
+                        rarFile.Delete();
+                }
+
+                // 删除FoxEbook.net.txt
+                var txtPath = Path.Combine(path, "FoxEbook.net.txt");
+                if (File.Exists(txtPath))
+                    File.Delete(txtPath);
+
+                // 去掉文件名中的后缀
+                foreach (var file in new DirectoryInfo(path).GetFiles())
+                {
+                    var newName = feature.TrimFileName(file.Name);
+                    if (newName != file.Name)
+                    {
+                        var newPath = Path.Combine(file.DirectoryName, newName);
+                        file.MoveTo(newPath);
+                    }
+                }
+
+                // 删除不需要的重复文件
+                var allToDelete = new List<FileInfo>();
+                foreach (var group in new DirectoryInfo(path).GetFiles()
+                    .GroupBy(f => Path.GetFileNameWithoutExtension(f.Name)))
+                {
+                    allToDelete.AddRange(feature.GetFilesToDelete(group));
+                }
+                foreach (var toDelete in allToDelete)
+                {
+                    toDelete.Delete();
                 }
             }
-
-            foreach (var subDir in dir.GetDirectories())
-                SearchDir(subDir);
-        }
-
-        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in _items)
+            catch (Exception exp)
             {
-                item.Selected = true;
-            }
-        }
-
-        private void btnSelectNone_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in _items)
-            {
-                item.Selected = false;
-            }
-        }
-
-        private void btnApply_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in _items)
-            {
-                item.Apply();
-            }
-        }
-
-        const string DIRNAME = @"D:\Books\Upload\baiduyun";
-
-        private string GetNewName(string fileName)
-        {
-            var re = new Regex(@"\.(.{10}\.)(pdf|epub)$");
-            var match = re.Match(fileName);
-            if (match.Success)
-                return fileName.Replace(match.Groups[1].Value, "");
-
-            re = new Regex(@"\.(.{10}_CODE)\.zip$");
-            match = re.Match(fileName);
-            if (match.Success)
-                return fileName.Replace(match.Groups[1].Value, "CODE");
-
-            return null;
-        }
-
-        private void btnCleanApply_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var book in _books.Where(b => b.Selected))
-            {
-                var oldPath = Path.Combine(DIRNAME, book.OldName);
-                var newPath = Path.Combine(DIRNAME, book.NewName);
-                try
-                {
-                    Directory.Move(oldPath, newPath);
-                }
-                catch (Exception exp)
-                {
-                    statusText.Content = exp.Message;
-                }
-            }
-        }
-
-        private void chkSelectAll_Click(object sender, RoutedEventArgs e)
-        {
-            var isChecked = (bool)chkSelectAll.IsChecked;
-            foreach (var book in _books)
-            {
-                book.Selected = isChecked;
+                App.LogException(exp);
             }
         }
     }

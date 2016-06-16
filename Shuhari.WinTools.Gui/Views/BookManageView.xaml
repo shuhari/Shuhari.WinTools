@@ -1,8 +1,9 @@
 ﻿<local:FeatureView x:Class="Shuhari.WinTools.Gui.Views.BookManageView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views">
-    
+             xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views"
+             xmlns:sw="http://github.com/shuhari/shuhari.library/wpf">
+
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="目录:" Margin="3" />
@@ -22,55 +23,15 @@
                              AcceptsReturn="True" IsReadOnly="True" Background="#CCCCCC" />
                 </Grid>
             </TabItem>
-            <TabItem Header="清理多余文件">
+            <TabItem Header="下载书籍处理">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button x:Name="btnSearch" Content="Search" Margin="4" Click="btnSearch_Click" />
-                        <Button x:Name="btnSelectAll" Content="Select All" Margin="4" Click="btnSelectAll_Click" />
-                        <Button x:Name="btnSelectNone" Content="Select None" Margin="4" Click="btnSelectNone_Click" />
-                        <Button x:Name="btnApply" Content="Apply" Margin="4" Click="btnApply_Click" />
-                    </StackPanel>
-                    <ListView x:Name="list">
-                        <ListView.View>
-                            <GridView>
-                                <GridView.Columns>
-                                    <GridViewColumn Header="Result" DisplayMemberBinding="{Binding Result}" Width="100" />
-                                    <GridViewColumn Header="Old Name" DisplayMemberBinding="{Binding OldName}" Width="300" />
-                                    <GridViewColumn Header="New Name" DisplayMemberBinding="{Binding NewName}" Width="300" />
-                                    <GridViewColumn Header="Directory" DisplayMemberBinding="{Binding DirName}" Width="300" />
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </DockPanel>
-            </TabItem>
-            <TabItem Header="清理文件名">
-                <DockPanel>
-                    <ToolBar DockPanel.Dock="Top">
-                        <Button x:Name="btnCleanApply" Content="Apply" Click="btnCleanApply_Click" />
-                    </ToolBar>
-                    <StatusBar DockPanel.Dock="Bottom">
-                        <StatusBarItem x:Name="statusText" Content=" " />
-                    </StatusBar>
-                    <ListView x:Name="bookList">
-                        <ListView.View>
-                            <GridView>
-                                <GridView.Columns>
-                                    <GridViewColumn Width="32">
-                                        <GridViewColumn.Header>
-                                            <CheckBox x:Name="chkSelectAll" Click="chkSelectAll_Click" />
-                                        </GridViewColumn.Header>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Old Name" DisplayMemberBinding="{Binding OldName}" Width="400" />
-                                    <GridViewColumn Header="New Name" DisplayMemberBinding="{Binding NewName}" Width="400" />
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
+                    <sw:HBox DockPanel.Dock="Top" Padding="2" ChildSpacing="2">
+                        <Label Content="目录" />
+                        <TextBox x:Name="txtDownloadDir" Width="200" />
+                        <Button x:Name="btnBrowseDownloadDir" Content="..." Click="btnBrowseDownloadDir_Click" />
+                        <Button x:Name="btnProcessDownload" Content="处理" Click="btnProcessDownload_Click" />
+                    </sw:HBox>
+                    <ListView x:Name="logList">
                     </ListView>
                 </DockPanel>
             </TabItem>
