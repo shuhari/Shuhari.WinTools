@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Shuhari.Library.Common.Utils;
 
 namespace Shuhari.WinTools.Core.Features.Encode.Providers
 {
@@ -17,13 +18,7 @@ namespace Shuhari.WinTools.Core.Features.Encode.Providers
             byte[] hash = csp.ComputeHash(value);
             csp.Clear();
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0, len = hash.Length; i < len; i++)
-            {
-                sb.Append(hash[i].ToString("x").PadLeft(2, '0'));
-            }
-            return sb.ToString();
-
+            return hash.ToHexString();
         }
     }
 }
