@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using Shuhari.WinTools.Core.Features;
 
 namespace Shuhari.WinTools.Gui.Views
 {
@@ -12,5 +8,18 @@ namespace Shuhari.WinTools.Gui.Views
     /// </summary>
     public abstract class FeatureView : UserControl
     {
+        public BaseFeature Feature { get; internal set; }
+
+        public virtual void OnCreated()
+        {
+        }
+
+        public virtual void OnActivated()
+        {
+        }
+
+        public virtual void OnDeactivated()
+        {
+        }
     }
 }

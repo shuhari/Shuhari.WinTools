@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Shuhari.WinTools.Gui.Models;
+using Shuhari.WinTools.Core.Features;
 using Shuhari.WinTools.Gui.Services;
+using Shuhari.WinTools.Gui.Views;
 
 namespace Shuhari.WinTools.Gui
 {
@@ -17,23 +18,29 @@ namespace Shuhari.WinTools.Gui
             Loaded += MainWindow_Loaded;
         }
 
-        private FeatureModel[] _features;
+        private BaseFeature[] _features;
         private ApplicationService _service;
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _service = new ApplicationService();
-            _features = _service.CreateModels(featureStack);
+            _features = _service.LoadFeatures(featureStack);
             featureList.ItemsSource = _features;
             featureStack.ActiveChild = null;
         }
 
         private void featureList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var fm = featureList.SelectedItem as FeatureModel;
-            if (fm != null && fm.View != null)
+            var fm = featureList.SelectedItem as BaseFeature;
+            if (fm != null)
             {
-                featureStack.ActiveChild = fm.View;
+                var view = _service.EnsureView(fm, featureStack);
+                if (view != featureStack.ActiveChild)
+                {
+                    featureStack.ActiveChild = view;
+                    (featureStack.ActiveChild as FeatureView)?.OnDeactivated();
+                    view?.OnActivated();
+                }
             }
         }
     }

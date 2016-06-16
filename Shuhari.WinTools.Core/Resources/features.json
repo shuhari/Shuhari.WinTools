@@ -47,5 +47,12 @@
         "iconPath": "Resources/clean-32.png",
         "featureClass": "Shuhari.WinTools.Core.Features.BookDownload.Feature",
         "viewClass": "Shuhari.WinTools.Gui.Views.BookDownloadView"
+    },
+    {
+        "displayName": "编码/解码",
+        "description": "编码/解码",
+        "iconPath": "Resources/encode-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.Encode.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.EncodeView"
     }
 ]

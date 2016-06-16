@@ -84,6 +84,9 @@
     <Compile Include="Views\DiskSpaceView.xaml.cs">
       <DependentUpon>DiskSpaceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EncodeView.xaml.cs">
+      <DependentUpon>EncodeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FeatureView.cs" />
     <Compile Include="Views\RenameFileView.xaml.cs">
       <DependentUpon>RenameFileView.xaml</DependentUpon>
@@ -125,6 +128,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EncodeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RenameFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -139,7 +146,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\FeatureModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -167,6 +173,12 @@
     <Resource Include="Resources\run-16.png" />
     <Resource Include="Resources\success-16.png" />
     <Resource Include="Resources\sysopt-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\encode-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

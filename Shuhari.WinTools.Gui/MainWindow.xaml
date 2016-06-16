@@ -8,9 +8,9 @@
 
     <Window.Resources>
         <DataTemplate x:Key="featureTpl">
-            <StackPanel MinWidth="48" ToolTip="{Binding Feature.Metadata.Description}">
-                <Image Width="24" Height="24" Source="{Binding Feature.Metadata.IconPath}" Margin="2" />
-                <TextBlock Text="{Binding Feature.Metadata.DisplayName}" Margin="2" />
+            <StackPanel MinWidth="48" ToolTip="{Binding Metadata.Description}">
+                <Image Width="24" Height="24" Source="{Binding Metadata.IconPath}" Margin="2" />
+                <TextBlock Text="{Binding Metadata.DisplayName}" Margin="2" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>

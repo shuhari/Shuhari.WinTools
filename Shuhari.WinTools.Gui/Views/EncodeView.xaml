@@ -1,0 +1,27 @@
+﻿<local:FeatureView x:Class="Shuhari.WinTools.Gui.Views.EncodeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views"
+             xmlns:sw="http://github.com/shuhari/shuhari.library/wpf">
+
+    <sw:FormGrid ColumnCount="3">
+        <Label Content="类型" />
+        <ComboBox x:Name="cboProvider" DisplayMemberPath="Metadata.DisplayName" 
+                  SelectionChanged="cboProvider_SelectionChanged" />
+        <Label Content="方向" />
+        <sw:HBox ChildSpacing="6">
+            <RadioButton x:Name="rbEncode" Content="编码" IsChecked="True" VerticalAlignment="Center" Click="rbEncode_Click" />
+            <RadioButton x:Name="rbDecode" Content="解码" VerticalAlignment="Center" Click="rbDecode_Click" />
+        </sw:HBox>
+        <Label Content="字符集" />
+        <ComboBox x:Name="cboEncoding" DisplayMemberPath="DisplayName" 
+                  SelectionChanged="cboEncoding_SelectionChanged" />
+        <Label Content="输入" />
+        <TextBox x:Name="txtSrc" Grid.ColumnSpan="5" Height="300" TextChanged="txtSrc_TextChanged" />
+        <Label Content="结果" />
+        <TextBox x:Name="txtResult" Grid.ColumnSpan="5" Height="300"
+                 IsReadOnly="True" Background="LightGray" 
+                 BorderThickness="1" BorderBrush="Black" />
+    </sw:FormGrid>
+    
+</local:FeatureView>
