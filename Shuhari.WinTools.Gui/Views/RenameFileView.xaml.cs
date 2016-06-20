@@ -120,7 +120,7 @@ namespace Shuhari.WinTools.Gui.Views
                 {
                     fi.MoveTo(newPath);
                 }
-                catch (Exception exp)
+                catch (Exception /*exp*/)
                 {
                     // TODO : notify exception
                 }
