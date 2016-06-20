@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using Shuhari.Library.Wpf;
+using Shuhari.Library.Windows;
 using Shuhari.WinTools.Core.Features.DiskSpace;
 
 namespace Shuhari.WinTools.Gui.Views
@@ -125,7 +125,7 @@ namespace Shuhari.WinTools.Gui.Views
             }
             catch (Exception exp)
             {
-                App.LogException(exp);
+                ((App)Application.Current).LogException(exp);
             }
         }
 

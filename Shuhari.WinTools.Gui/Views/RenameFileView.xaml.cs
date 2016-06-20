@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using Shuhari.Library.Common.Utils;
-using Shuhari.Library.Wpf;
+using Shuhari.Library.Utils;
+using Shuhari.Library.Windows;
 using Shuhari.WinTools.Core.Features.RenameFile;
 
 namespace Shuhari.WinTools.Gui.Views

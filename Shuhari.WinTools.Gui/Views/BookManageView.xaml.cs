@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
-using Shuhari.Library.Common.IO.Compression;
-using Shuhari.Library.Common.Utils;
-using Shuhari.Library.Wpf;
-using Shuhari.WinTools.Core.Features.BookManage;
+using Shuhari.Library.IO.Compression;
+using Shuhari.Library.Utils;
+using Shuhari.Library.Windows;
 using BookManageFeature = Shuhari.WinTools.Core.Features.BookManage.Feature;
 
 namespace Shuhari.WinTools.Gui.Views
@@ -186,7 +183,7 @@ namespace Shuhari.WinTools.Gui.Views
             }
             catch (Exception exp)
             {
-                App.LogException(exp);
+                ((App)Application.Current).LogException(exp);
             }
         }
     }

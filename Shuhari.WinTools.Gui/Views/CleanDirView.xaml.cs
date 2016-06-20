@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Shuhari.Library.Wpf;
+using Shuhari.Library.Windows;
 
 namespace Shuhari.WinTools.Gui.Views
 {

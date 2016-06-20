@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Shuhari.Library.Common.Utils;
+using Shuhari.Library.Utils;
 
 namespace Shuhari.WinTools.Core.Features.Encode.Providers
 {

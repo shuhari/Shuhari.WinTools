@@ -41,12 +41,20 @@
     <Reference Include="Aga.Controls">
       <HintPath>..\Lib\Aga.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Shuhari.Library.Common, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Common.0.1.8\lib\net45\Shuhari.Library.Common.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shuhari.Library.Wpf, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Wpf.0.1.8\lib\net45\Shuhari.Library.Wpf.dll</HintPath>
+    <Reference Include="NVelocity, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVelocity.1.0.3\lib\NVelocity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shuhari.Library.Common, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Common.0.2.0\lib\net45\Shuhari.Library.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shuhari.Library.Wpf, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Wpf.0.2.0\lib\net45\Shuhari.Library.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

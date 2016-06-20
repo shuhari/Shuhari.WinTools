@@ -93,7 +93,7 @@ namespace Shuhari.WinTools.Gui.Views
                 catch (Exception exp)
                 {
                     ReportTaskStatus(task, OptimizeTaskStatus.Failure);
-                    App.LogException(exp);
+                    ((App)Application.Current).LogException(exp);
                 }
             }
         }

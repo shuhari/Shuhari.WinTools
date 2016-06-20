@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Shuhari.Library.Common.ComponentModel;
+using Shuhari.Library.ComponentModel;
 
 namespace Shuhari.WinTools.Core.Features.BookManage
 {
