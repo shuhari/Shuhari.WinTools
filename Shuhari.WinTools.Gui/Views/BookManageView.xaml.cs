@@ -165,7 +165,14 @@ namespace Shuhari.WinTools.Gui.Views
                     if (newName != file.Name)
                     {
                         var newPath = Path.Combine(file.DirectoryName, newName);
-                        file.MoveTo(newPath);
+                        try
+                        {
+                            file.MoveTo(newPath);
+                        }
+                        catch(Exception exp)
+                        {
+                            ((App)Application.Current).LogException(exp);
+                        }
                     }
                 }
 
