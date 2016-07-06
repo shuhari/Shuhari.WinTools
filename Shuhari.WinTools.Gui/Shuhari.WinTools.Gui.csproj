@@ -58,6 +58,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
@@ -89,6 +90,9 @@
     <Compile Include="Views\CleanDirView.xaml.cs">
       <DependentUpon>CleanDirView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CompareFileDialog.xaml.cs">
+      <DependentUpon>CompareFileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DiskSpaceView.xaml.cs">
       <DependentUpon>DiskSpaceView.xaml</DependentUpon>
     </Compile>
@@ -96,6 +100,9 @@
       <DependentUpon>EncodeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FeatureView.cs" />
+    <Compile Include="Views\ImageFinderView.xaml.cs">
+      <DependentUpon>ImageFinderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RenameFileView.xaml.cs">
       <DependentUpon>RenameFileView.xaml</DependentUpon>
     </Compile>
@@ -132,11 +139,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CompareFileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DiskSpaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EncodeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImageFinderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,6 +202,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\imagefinder-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

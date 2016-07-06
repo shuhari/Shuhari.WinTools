@@ -60,6 +60,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
@@ -99,6 +100,13 @@
     <Compile Include="Features\Encode\Providers\HtmlEncodeProvider.cs" />
     <Compile Include="Features\Encode\Providers\MD5EncodeProvider.cs" />
     <Compile Include="Features\Encode\Providers\UrlEncodeProvider.cs" />
+    <Compile Include="Features\ImageFinder\DirectoryData.cs" />
+    <Compile Include="Features\ImageFinder\Feature.cs" />
+    <Compile Include="Features\ImageFinder\FileCollection.cs" />
+    <Compile Include="Features\ImageFinder\FileItem.cs" />
+    <Compile Include="Features\ImageFinder\FinderTask.cs" />
+    <Compile Include="Features\ImageFinder\NotifyArgs.cs" />
+    <Compile Include="Features\ImageFinder\State.cs" />
     <Compile Include="Features\RenameFile\Feature.cs" />
     <Compile Include="Features\RenameFile\RenameItem.cs" />
     <Compile Include="Features\ServiceManage\Feature.cs" />

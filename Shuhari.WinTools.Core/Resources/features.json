@@ -54,5 +54,12 @@
         "iconPath": "Resources/encode-32.png",
         "featureClass": "Shuhari.WinTools.Core.Features.Encode.Feature",
         "viewClass": "Shuhari.WinTools.Gui.Views.EncodeView"
+    },
+    {
+        "displayName": "查找重复图像",
+        "description": "查找重复图像",
+        "iconPath": "Resources/imagefinder-32.png",
+        "featureClass": "Shuhari.WinTools.Core.Features.ImageFinder.Feature",
+        "viewClass": "Shuhari.WinTools.Gui.Views.ImageFinderView"
     }
 ]

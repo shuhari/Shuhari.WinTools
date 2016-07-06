@@ -1,0 +1,25 @@
+﻿<Window x:Class="Shuhari.WinTools.Gui.Views.CompareFileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Shuhari.WinTools.Gui.Views"
+        mc:Ignorable="d"
+        Height="300" Width="300"
+        Title="比较目录" SizeToContent="WidthAndHeight" FontFamily="Tahoma" FontSize="12"
+        TextOptions.TextFormattingMode="Display" WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
+        ShowInTaskbar="false" WindowStartupLocation="CenterOwner">
+
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+            <Button Click="btnClose_Click" x:Name="btnClose" Content="关闭" Margin="3" MinWidth="100"/>
+        </StackPanel>
+        <DataGrid x:Name="dg" Height="150" AutoGenerateColumns="false">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="目录" Width="500" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="文件数" Width="100" Binding="{Binding FileCount}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+    
+</Window>
