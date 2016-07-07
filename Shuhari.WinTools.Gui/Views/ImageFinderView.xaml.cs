@@ -6,14 +6,15 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Shuhari.Library.Utils;
+using Shuhari.Library.Win32;
+using Shuhari.Library.Windows;
 using Shuhari.WinTools.Core.Features.ImageFinder;
 
 namespace Shuhari.WinTools.Gui.Views
@@ -80,16 +81,12 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void chkShowPreview_Click(object sender, RoutedEventArgs e)
         {
-            Grid grid = previewPanel;
-            bool? isChecked = chkShowPreview.IsChecked;
-            int num = (!isChecked.GetValueOrDefault() ? 0 : (isChecked.HasValue ? 1 : 0)) != 0 ? 0 : 2;
-            grid.Visibility = (Visibility)num;
+            previewPanel.Show(chkShowPreview.IsChecked.GetValueOrDefault());
         }
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            FileItem[] fileItemArray = _files.Where(f => f.Selected)
-                .ToArray();
+            var fileItemArray = _files.Where(f => f.Selected).ToArray();
             if (fileItemArray.Length == 0)
                 return;
 
@@ -125,8 +122,10 @@ namespace Shuhari.WinTools.Gui.Views
                 return;
             FileItem selectedFile = GetSelectedFile();
             if (selectedFile != null)
+            {
                 selectedFile.Selected = !selectedFile.Selected;
-            UpdateSelectionMsg();
+                UpdateSelectionMsg();
+            }
         }
 
         internal bool CanEnterState(State destState)
@@ -231,8 +230,8 @@ namespace Shuhari.WinTools.Gui.Views
                     if (fileItem.DirName == selectedFile.DirName)
                         fileItem.Selected = true;
                 }
+                UpdateSelectionMsg();
             }
-            UpdateSelectionMsg();
         }
 
         private FileItem GetSelectedFile()
@@ -267,8 +266,8 @@ namespace Shuhari.WinTools.Gui.Views
                     if (fileItem.DirName == selectedFile.DirName)
                         fileItem.Selected = false;
                 }
+                UpdateSelectionMsg();
             }
-            UpdateSelectionMsg();
         }
 
         private void mnuOpenFile_Click(object sender, RoutedEventArgs e)
@@ -276,7 +275,7 @@ namespace Shuhari.WinTools.Gui.Views
             FileItem selectedFile = GetSelectedFile();
             if (selectedFile == null)
                 return;
-            ShellExecute((IntPtr)0, "open", selectedFile.GetFullPath(), null, selectedFile.DirName, 5);
+            ShellApi.ShellExecute((IntPtr)0, "open", selectedFile.GetFullPath(), null, selectedFile.DirName, 5);
         }
 
         private void mnuOpenDir_Click(object sender, RoutedEventArgs e)
@@ -284,28 +283,7 @@ namespace Shuhari.WinTools.Gui.Views
             FileItem selectedFile = GetSelectedFile();
             if (selectedFile == null)
                 return;
-            ShellExecute((IntPtr)0, "open", "explorer.exe", string.Format("/e,\"{0}\"", selectedFile.DirName), null, 5);
-        }
-
-        [DllImport("shell32.dll")]
-        public static extern IntPtr ShellExecute(IntPtr hwnd, string lpOperation, string lpFile, string lpParameters, string lpDirectory, int nShowCmd);
-
-        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
-        public static extern int SHFileOperation(ref SHFILEOPSTRUCT FileOp);
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Auto)]
-        public struct SHFILEOPSTRUCT
-        {
-            public IntPtr hwnd;
-            [MarshalAs(UnmanagedType.U4)]
-            public int wFunc;
-            public string pFrom;
-            public string pTo;
-            public short fFlags;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fAnyOperationsAborted;
-            public IntPtr hNameMappings;
-            public string lpszProgressTitle;
+            ShellApi.ShellExecute((IntPtr)0, "open", "explorer.exe", string.Format("/e,\"{0}\"", selectedFile.DirName), null, 5);
         }
 
         private void mnuCompareDir_Click(object sender, RoutedEventArgs e)
@@ -323,13 +301,13 @@ namespace Shuhari.WinTools.Gui.Views
 
         private bool DeleteFile(FileItem file)
         {
-            var sfo = new SHFILEOPSTRUCT()
+            var sfo = new ShellApi.SHFILEOPSTRUCT()
             {
-                wFunc = 3,
-                fFlags = 80,
+                wFunc = ShellApi.FileFuncFlags.FO_DELETE,
+                fFlags = ShellApi.FILEOP_FLAGS.FOF_ALLOWUNDO | ShellApi.FILEOP_FLAGS.FOF_NOCONFIRMATION,
                 pFrom = file.GetFullPath() + char.MinValue + char.MinValue
             };
-            return SHFileOperation(ref sfo) == 0;
+            return ShellApi.SHFileOperation(ref sfo) == 0;
         }
 
         internal void NotifyFound(FileItem[] files)
@@ -395,13 +373,8 @@ namespace Shuhari.WinTools.Gui.Views
             if (_state != State.Stopped)
                 return;
             sbiText.Content = "";
-            ShowProgressBar(false);
+            progress.Show(false);
             _task = null;
-        }
-
-        private void ShowProgressBar(bool show)
-        {
-            progress.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void EnableButtons(bool canStart, bool canStop)
@@ -418,21 +391,12 @@ namespace Shuhari.WinTools.Gui.Views
         internal void ReportException(Exception exp)
         {
             MessageBox.Show(string.Format("Message={0}\r\nStack Trac={1}", exp.Message, exp.StackTrace));
-            try
-            {
-                StringBuilder stringBuilder = new StringBuilder();
-                for (; exp != null; exp = exp.InnerException)
-                    stringBuilder.AppendFormat("Message={0}\r\nStack Trace={1}\r\n\r\n", exp.Message, exp.StackTrace);
-                File.AppendAllText("error.log", stringBuilder.ToString());
-            }
-            catch (Exception ex)
-            {
-            }
+            exp.LogToFile("{base}/error.log");
         }
 
         internal void ReportPercentage(int percentage)
         {
-            ShowProgressBar(true);
+            progress.Show(true);
             progress.Value = percentage;
         }
     }
@@ -491,9 +455,9 @@ namespace Shuhari.WinTools.Gui.Views
             _worker.WorkerReportsProgress = true;
             _worker.WorkerSupportsCancellation = true;
             _dirs = dirs;
-            _worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
-            _worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
+            _worker.DoWork += worker_DoWork;
+            _worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            _worker.ProgressChanged += worker_ProgressChanged;
         }
 
         internal static FileInfo[] SafeFiles(DirectoryInfo dir)
@@ -557,13 +521,13 @@ namespace Shuhari.WinTools.Gui.Views
             try
             {
                 _totalFiles = 0;
-                ProcessDir(new Action<DirectoryInfo>(CountFiles));
+                ProcessDir(CountFiles);
                 _processFiles = 0;
-                ProcessDir(new Action<DirectoryInfo>(UpdateIndex));
+                ProcessDir(UpdateIndex);
                 _processFiles = 0;
                 _files = new List<FileItem>();
                 Notify(new StatusEventArgs("登记所有文件...", new object[0]));
-                ProcessDir(new Action<DirectoryInfo>(CollectFiles));
+                ProcessDir(CollectFiles);
                 _groupIndex = 0;
                 Notify(new StatusEventArgs("按Hash分组...", new object[0]));
                 FindDuplidateByHash();

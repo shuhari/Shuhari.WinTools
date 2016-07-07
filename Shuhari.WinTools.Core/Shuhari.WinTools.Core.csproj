@@ -51,12 +51,12 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Shuhari.Library.Common, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Common.0.2.0\lib\net45\Shuhari.Library.Common.dll</HintPath>
+    <Reference Include="Shuhari.Library.Common, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Common.0.2.1.0\lib\net45\Shuhari.Library.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shuhari.Library.Crawler, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Crawler.0.1.7\lib\net461\Shuhari.Library.Crawler.dll</HintPath>
+    <Reference Include="Shuhari.Library.Crawler, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Crawler.0.2.1.0\lib\net461\Shuhari.Library.Crawler.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

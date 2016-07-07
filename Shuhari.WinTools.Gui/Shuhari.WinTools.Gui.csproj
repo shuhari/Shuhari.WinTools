@@ -49,12 +49,12 @@
       <HintPath>..\packages\NVelocity.1.0.3\lib\NVelocity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shuhari.Library.Common, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Common.0.2.0\lib\net45\Shuhari.Library.Common.dll</HintPath>
+    <Reference Include="Shuhari.Library.Common, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Common.0.2.1.0\lib\net45\Shuhari.Library.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shuhari.Library.Wpf, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shuhari.Library.Wpf.0.2.0\lib\net45\Shuhari.Library.Wpf.dll</HintPath>
+    <Reference Include="Shuhari.Library.Wpf, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shuhari.Library.Wpf.0.2.1.0\lib\net45\Shuhari.Library.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
