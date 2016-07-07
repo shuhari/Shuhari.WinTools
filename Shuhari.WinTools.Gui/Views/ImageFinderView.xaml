@@ -12,17 +12,17 @@
     <DockPanel>
         <ToolBar DockPanel.Dock="Top">
             <CheckBox Click="chkShowPreview_Click" x:Name="chkShowPreview" ToolTip="显示预览" IsChecked="True">
-                <Image Source="Images/preview.png" Stretch="None"/>
+                <Image Source="/Shuhari.WinTools.Gui;component/Resources/ImageFinder/preview.png" Stretch="None"/>
             </CheckBox>
             <Button Click="btnStart_Click" x:Name="btnStart" ToolTip="开始">
-                <Image Source="Images/start.png" Stretch="None"/>
+                <Image Source="/Shuhari.WinTools.Gui;component/Resources/ImageFinder/start.png" Stretch="None"/>
             </Button>
             <Button Click="btnStop_Click" x:Name="btnStop" ToolTip="停止">
-                <Image Source="Images/stop.png" Stretch="None"/>
+                <Image Source="/Shuhari.WinTools.Gui;component/Resources/ImageFinder/stop.png" Stretch="None"/>
             </Button>
             <Separator/>
             <Button Click="btnDelete_Click" x:Name="btnDelete" ToolTip="删除选中的文件">
-                <Image Source="Images/delete.png" Stretch="None"/>
+                <Image Source="/Shuhari.WinTools.Gui;component/Resources/ImageFinder/delete.png" Stretch="None"/>
             </Button>
         </ToolBar>
         <Grid DockPanel.Dock="Top">

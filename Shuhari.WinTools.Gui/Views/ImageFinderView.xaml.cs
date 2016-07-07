@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-using Shuhari.WinTools.Core.Features.ImageFinder;
-using System.Collections.ObjectModel;
-using System.Collections;
-using System.Linq;
 using System.Windows.Input;
-using System.ComponentModel;
-using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
-using System.Text;
+using Shuhari.WinTools.Core.Features.ImageFinder;
 
 namespace Shuhari.WinTools.Gui.Views
 {
@@ -27,6 +27,17 @@ namespace Shuhari.WinTools.Gui.Views
         public ImageFinderView()
         {
             InitializeComponent();
+
+            Loaded += ImageFinderView_Loaded;
+        }
+
+        private void ImageFinderView_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.EnterState(State.Stopped);
+            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            this.txtDir1.Text = configuration.AppSettings.Settings["imageFinder.dir1"].Value;
+            this.txtDir2.Text = configuration.AppSettings.Settings["imageFinder.dir2"].Value;
+            this.txtDir3.Text = configuration.AppSettings.Settings["imageFinder.dir3"].Value;
         }
 
         private State _state;
@@ -38,9 +49,9 @@ namespace Shuhari.WinTools.Gui.Views
             if (!this.CanEnterState(State.Working))
                 return;
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            configuration.AppSettings.Settings["dir1"].Value = this.txtDir1.Text.Trim();
-            configuration.AppSettings.Settings["dir2"].Value = this.txtDir2.Text.Trim();
-            configuration.AppSettings.Settings["dir3"].Value = this.txtDir3.Text.Trim();
+            configuration.AppSettings.Settings["imageFinder.dir1"].Value = this.txtDir1.Text.Trim();
+            configuration.AppSettings.Settings["imageFinder.dir2"].Value = this.txtDir2.Text.Trim();
+            configuration.AppSettings.Settings["imageFinder.dir3"].Value = this.txtDir3.Text.Trim();
             configuration.Save();
             List<string> dirs = new List<string>();
             this.AddValidDir(dirs, this.txtDir1);
@@ -306,12 +317,13 @@ namespace Shuhari.WinTools.Gui.Views
 
         private bool DeleteFile(FileItem file)
         {
-            return SHFileOperation(ref new SHFILEOPSTRUCT()
+            var sfo = new SHFILEOPSTRUCT()
             {
                 wFunc = 3,
                 fFlags = (short)80,
                 pFrom = file.GetFullPath() + (object)char.MinValue + (string)(object)char.MinValue
-            }) == 0;
+            };
+            return SHFileOperation(ref sfo) == 0;
         }
 
         internal void NotifyFound(FileItem[] files)
@@ -439,15 +451,21 @@ namespace Shuhari.WinTools.Gui.Views
 
     public class FinderTask
     {
-        private static readonly string[] _extensions = new string[7]
+        private static readonly string[] _extensions = new string[]
         {
       ".jpg",
+      ".jpeg",
       ".png",
       ".bmp",
       ".gif",
       ".avi",
       ".mp4",
-      ".flv"
+      ".mpg",
+      ".wmv",
+      ".flv",
+      ".mkv",
+      ".ssa",
+      ".srt",
         };
         private readonly ImageFinderView _win;
         private readonly BackgroundWorker _worker;
@@ -469,10 +487,37 @@ namespace Shuhari.WinTools.Gui.Views
             this._worker.ProgressChanged += new ProgressChangedEventHandler(this.worker_ProgressChanged);
         }
 
+        internal static FileInfo[] SafeFiles(DirectoryInfo dir)
+        {
+            try
+            {
+                return dir.GetFiles();
+            }
+            catch(Exception exp)
+            {
+                // TODO Log exception
+                Console.WriteLine(exp.Message);
+                return new FileInfo[0];
+            }
+        }
+
+        internal static DirectoryInfo[] SafeDirs(DirectoryInfo dir)
+        {
+            try
+            {
+                return dir.GetDirectories();
+            }
+            catch(Exception exp)
+            {
+                // TODO Log exception
+                Console.WriteLine(exp.Message);
+                return new DirectoryInfo[0];
+            }
+        }
         private FileInfo[] GetFiles(DirectoryInfo dir)
         {
             List<FileInfo> list = new List<FileInfo>();
-            foreach (FileInfo fileInfo in dir.GetFiles())
+            foreach (FileInfo fileInfo in SafeFiles(dir))
             {
                 string str = (fileInfo.Extension ?? "").ToLowerInvariant();
                 if (Enumerable.Contains<string>((IEnumerable<string>)FinderTask._extensions, str))
@@ -547,7 +592,7 @@ namespace Shuhari.WinTools.Gui.Views
             handler(di);
             if (this._worker.CancellationPending)
                 return;
-            foreach (DirectoryInfo di1 in di.GetDirectories())
+            foreach (DirectoryInfo di1 in FinderTask.SafeDirs(di))
             {
                 if (this._worker.CancellationPending)
                     break;
@@ -557,43 +602,57 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void CountFiles(DirectoryInfo di)
         {
-            this.Notify((NotifyArgs)new StatusEventArgs("搜索目录 {0} ...", new object[1]
+            try
             {
+                this.Notify((NotifyArgs)new StatusEventArgs("搜索目录 {0} ...", new object[1]
+                {
         (object) di.FullName
-            }));
-            this._totalFiles += this.GetFiles(di).Length;
+                }));
+                this._totalFiles += this.GetFiles(di).Length;
+            }
+            catch(Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+            }
         }
 
         private void UpdateIndex(DirectoryInfo dir)
         {
-            this.Notify((NotifyArgs)new StatusEventArgs("重建目录索引 {0} ...", new object[1]
+            try
             {
+                this.Notify((NotifyArgs)new StatusEventArgs("重建目录索引 {0} ...", new object[1]
+                {
         (object) dir.FullName
-            }));
-            FileInfo[] files = this.GetFiles(dir);
-            FileCollection fileCollection = FileCollection.Load(dir);
-            foreach (FileInfo fi in files)
-            {
-                FileItem fileItem1 = fileCollection.GetItem(fi.Name);
-                if (fileItem1 == null)
+                }));
+                FileInfo[] files = this.GetFiles(dir);
+                FileCollection fileCollection = FileCollection.Load(dir);
+                foreach (FileInfo fi in files)
                 {
-                    FileItem fileItem2 = FileItem.Load(fi);
-                    if (fileItem2 != null)
-                        fileCollection.AddItem(fileItem2);
+                    FileItem fileItem1 = fileCollection.GetItem(fi.Name);
+                    if (fileItem1 == null)
+                    {
+                        FileItem fileItem2 = FileItem.Load(fi);
+                        if (fileItem2 != null)
+                            fileCollection.AddItem(fileItem2);
+                    }
+                    else if (fileItem1.IsChanged(fi))
+                    {
+                        FileItem updateItem = FileItem.Load(fi);
+                        if (updateItem != null)
+                            fileCollection.UpdateItem(updateItem);
+                    }
                 }
-                else if (fileItem1.IsChanged(fi))
-                {
-                    FileItem updateItem = FileItem.Load(fi);
-                    if (updateItem != null)
-                        fileCollection.UpdateItem(updateItem);
-                }
+                foreach (FileItem fileItem in Enumerable.ToArray<FileItem>(Enumerable.Where<FileItem>((IEnumerable<FileItem>)fileCollection, (Func<FileItem, bool>)(it => this.FileNotExist(files, it)))))
+                    fileCollection.RemoveItem(fileItem);
+                if (fileCollection.IsChanged)
+                    fileCollection.Save(dir);
+                this._processFiles += files.Length;
+                this.Notify((NotifyArgs)new ProgressEventArgs(this._processFiles, this._totalFiles));
             }
-            foreach (FileItem fileItem in Enumerable.ToArray<FileItem>(Enumerable.Where<FileItem>((IEnumerable<FileItem>)fileCollection, (Func<FileItem, bool>)(it => this.FileNotExist(files, it)))))
-                fileCollection.RemoveItem(fileItem);
-            if (fileCollection.IsChanged)
-                fileCollection.Save(dir);
-            this._processFiles += files.Length;
-            this.Notify((NotifyArgs)new ProgressEventArgs(this._processFiles, this._totalFiles));
+            catch(Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+            }
         }
 
         private bool FileNotExist(FileInfo[] files, FileItem fileItem)
