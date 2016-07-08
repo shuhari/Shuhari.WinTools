@@ -87,15 +87,15 @@
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Control.HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="Control.Background"
-                  Value="{Binding Converter={StaticResource rowBack}, RelativeSource={RelativeSource Self}}"/>
+                            Value="{Binding GroupIndex, Converter={StaticResource rowBack}}"/>
                     <Style.Triggers>
                         <Trigger Property="UIElement.IsMouseOver" Value="true">
                             <Setter Property="Control.Background"
-                      Value="{Binding Converter={StaticResource rowBack}, RelativeSource={RelativeSource Self}}"/>
+                                Value="{Binding GroupIndex, Converter={StaticResource rowBack}}"/>
                         </Trigger>
                         <Trigger Property="ListBoxItem.IsSelected" Value="true">
                             <Setter Property="Control.Background"
-                      Value="{Binding Converter={StaticResource rowBack}, RelativeSource={RelativeSource Self}}"/>
+                                Value="{Binding GroupIndex,Converter={StaticResource rowBack}}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Globalization;
@@ -16,13 +15,14 @@ using Shuhari.Library.Utils;
 using Shuhari.Library.Win32;
 using Shuhari.Library.Windows;
 using Shuhari.WinTools.Core.Features.ImageFinder;
+using Shuhari.WinTools.Core.Features.ImageFinder.Args;
 
 namespace Shuhari.WinTools.Gui.Views
 {
     /// <summary>
     /// Interaction logic for ImageFinderView.xaml
     /// </summary>
-    public partial class ImageFinderView : FeatureView
+    public partial class ImageFinderView : FeatureView, IImageFinderUI
     {
         public ImageFinderView()
         {
@@ -42,7 +42,7 @@ namespace Shuhari.WinTools.Gui.Views
 
         private State _state;
         private FinderTask _task;
-        private ObservableCollection<FileItem> _files;
+        private FileItemCollection _files;
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -61,7 +61,13 @@ namespace Shuhari.WinTools.Gui.Views
             AddValidDir(dirs, txtDir3);
             if (dirs.Count > 0)
             {
-                _files = new ObservableCollection<FileItem>();
+                if (_files != null)
+                {
+                    _files.SelectionChanged -= files_SelectionChanged;
+                }
+
+                _files = new FileItemCollection();
+                _files.SelectionChanged += files_SelectionChanged;
                 fileList.ItemsSource = _files;
                 _task = new FinderTask(this, dirs.ToArray());
                 _task.Start();
@@ -70,6 +76,11 @@ namespace Shuhari.WinTools.Gui.Views
             {
                 MessageBox.Show("请输入目录");
             }
+        }
+
+        private void files_SelectionChanged(object sender, EventArgs e)
+        {
+            UpdateSelectionMsg();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -90,9 +101,9 @@ namespace Shuhari.WinTools.Gui.Views
             if (fileItemArray.Length == 0)
                 return;
 
-            int num1 = 0;
-            int num2 = 0;
-            int num3 = 0;
+            int successCount = 0;
+            int failedCount = 0;
+            int dirCount = 0;
             long size = 0;
             for (int index = fileItemArray.Length - 1; index >= 0; --index)
             {
@@ -100,31 +111,30 @@ namespace Shuhari.WinTools.Gui.Views
                 if (DeleteFile(file))
                 {
                     _files.Remove(file);
-                    ++num1;
+                    ++successCount;
                     size += file.Size;
                     if (CleanDir(file.DirName))
-                        ++num3;
+                        ++dirCount;
                 }
                 else
-                    ++num2;
+                    ++failedCount;
                 if (index % 100 == 0)
                     GC.Collect();
             }
-            foreach (FileItem fileItem in GetOrphans())
-                _files.Remove(fileItem);
+            _files.RemoveOrphans();
             sbiText.Content = string.Format("删除成功: {0}, 失败: {1}, 释放空间: {2}, 清理目录数={3}", 
-                num1, num2, FormatSize(size), num3);
+                successCount, failedCount, FormatSize(size), dirCount);
         }
 
         private void fileList_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Space)
-                return;
-            FileItem selectedFile = GetSelectedFile();
-            if (selectedFile != null)
+            if (e.Key == Key.Space)
             {
-                selectedFile.Selected = !selectedFile.Selected;
-                UpdateSelectionMsg();
+                FileItem selectedFile = GetSelectedFile();
+                if (selectedFile != null)
+                {
+                    _files.Select(selectedFile, !selectedFile.Selected);
+                }
             }
         }
 
@@ -153,7 +163,7 @@ namespace Shuhari.WinTools.Gui.Views
         {
             if (e.AddedItems.Count <= 0)
                 return;
-            FileItem[] sameGroup = GetSameGroup((FileItem)e.AddedItems[0]);
+            FileItem[] sameGroup = _files.GetSameGroup((FileItem)e.AddedItems[0]);
             Preview(preview0, sameGroup, 0);
             Preview(preview1, sameGroup, 1);
             Preview(preview2, sameGroup, 2);
@@ -193,44 +203,12 @@ namespace Shuhari.WinTools.Gui.Views
             }
         }
 
-        private FileItem[] GetSameGroup(FileItem fi)
-        {
-            List<FileItem> list = new List<FileItem>();
-            int num = _files.IndexOf(fi);
-            if (num >= 0)
-            {
-                list.Add(fi);
-                for (int index = num - 1; index >= 0; --index)
-                {
-                    FileItem fileItem = _files[index];
-                    if (fileItem.GroupIndex == fi.GroupIndex)
-                        list.Insert(0, fileItem);
-                    else
-                        break;
-                }
-                for (int index = num + 1; index < _files.Count; ++index)
-                {
-                    FileItem fileItem = _files[index];
-                    if (fileItem.GroupIndex == fi.GroupIndex)
-                        list.Add(fileItem);
-                    else
-                        break;
-                }
-            }
-            return list.ToArray();
-        }
-
         private void mnuSelectSameDir_Click(object sender, RoutedEventArgs e)
         {
             FileItem selectedFile = GetSelectedFile();
             if (selectedFile != null)
             {
-                foreach (FileItem fileItem in _files)
-                {
-                    if (fileItem.DirName == selectedFile.DirName)
-                        fileItem.Selected = true;
-                }
-                UpdateSelectionMsg();
+                _files.SelectSameDir(selectedFile, true);
             }
         }
 
@@ -241,19 +219,12 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void UpdateSelectionMsg()
         {
-            FileItem[] fileItemArray = _files.Where(f => f.Selected).ToArray();
-            int[] numArray = fileItemArray.Select(f => f.GroupIndex).Distinct().ToArray();
-            sbiText.Content = string.Format("共选中 {0} 个文件", fileItemArray.Length);
-            var list = new List<int>();
-            foreach (int num in numArray)
-            {
-                int groupIndex = num;
-                if (fileItemArray.Where(f => f.GroupIndex == groupIndex).ToArray().Length == _files.Where(f => f.GroupIndex == groupIndex).ToArray().Length)
-                    list.Add(groupIndex);
-            }
-            if (list.Count <= 0)
-                return;
-            MessageBox.Show("以下分组文件被全部选中，请谨慎删除！\r\n" + string.Join<int>("\r\n", list));
+            int selectCount;
+            int[] allSelectedGroups;
+            _files.GetSelectInfo(out selectCount, out allSelectedGroups);
+            sbiText.Content = string.Format("共选中 {0} 个文件", selectCount);
+            if (allSelectedGroups.Length > 0)
+                MessageBox.Show("以下分组文件被全部选中，请谨慎删除！\r\n" + string.Join("\r\n", allSelectedGroups));
         }
 
         private void mnuUnselectSameDir_Click(object sender, RoutedEventArgs e)
@@ -261,42 +232,36 @@ namespace Shuhari.WinTools.Gui.Views
             FileItem selectedFile = GetSelectedFile();
             if (selectedFile != null)
             {
-                foreach (FileItem fileItem in _files)
-                {
-                    if (fileItem.DirName == selectedFile.DirName)
-                        fileItem.Selected = false;
-                }
-                UpdateSelectionMsg();
+                _files.SelectSameDir(selectedFile, false);
             }
         }
 
         private void mnuOpenFile_Click(object sender, RoutedEventArgs e)
         {
             FileItem selectedFile = GetSelectedFile();
-            if (selectedFile == null)
-                return;
-            ShellApi.ShellExecute((IntPtr)0, "open", selectedFile.GetFullPath(), null, selectedFile.DirName, 5);
+            if (selectedFile != null)
+                ShellApi.ShellExecute((IntPtr)0, "open", selectedFile.GetFullPath(), null, selectedFile.DirName, 5);
         }
 
         private void mnuOpenDir_Click(object sender, RoutedEventArgs e)
         {
             FileItem selectedFile = GetSelectedFile();
-            if (selectedFile == null)
-                return;
-            ShellApi.ShellExecute((IntPtr)0, "open", "explorer.exe", string.Format("/e,\"{0}\"", selectedFile.DirName), null, 5);
+            if (selectedFile != null)
+                ShellApi.ShellExecute((IntPtr)0, "open", "explorer.exe", string.Format("/e,\"{0}\"", selectedFile.DirName), null, 5);
         }
 
         private void mnuCompareDir_Click(object sender, RoutedEventArgs e)
         {
             FileItem file = GetSelectedFile();
-            if (file == null)
-                return;
-            string[] dirs = _files.Where(f => f.GroupIndex == file.GroupIndex)
-                .Select(f => f.DirName)
-                .Distinct().ToArray();
-            var compareDirDialog = new CompareFileDialog();
-            compareDirDialog.SetDirectories(dirs);
-            compareDirDialog.ShowDialog();
+            if (file != null)
+            {
+                string[] dirs = _files.Where(f => f.GroupIndex == file.GroupIndex)
+                    .Select(f => f.DirName)
+                    .Distinct().ToArray();
+                var compareDirDialog = new CompareFileDialog();
+                compareDirDialog.SetDirectories(dirs);
+                compareDirDialog.ShowDialog();
+            }
         }
 
         private bool DeleteFile(FileItem file)
@@ -310,7 +275,7 @@ namespace Shuhari.WinTools.Gui.Views
             return ShellApi.SHFileOperation(ref sfo) == 0;
         }
 
-        internal void NotifyFound(FileItem[] files)
+        public void NotifyFound(FileItem[] files)
         {
             foreach (FileItem fileItem in files)
                 _files.Add(fileItem);
@@ -341,14 +306,6 @@ namespace Shuhari.WinTools.Gui.Views
             return false;
         }
 
-        private FileItem[] GetOrphans()
-        {
-            return _files.GroupBy(f => f.GroupIndex)
-                .Where(g => g.Count() == 1)
-                .SelectMany(g => g)
-                .ToArray();
-        }
-
         private string FormatSize(long size)
         {
             if (size >= 1048576L)
@@ -358,7 +315,7 @@ namespace Shuhari.WinTools.Gui.Views
             return size.ToString() + "B";
         }
 
-        internal void EnterState(State state)
+        public void EnterState(State state)
         {
             _state = state;
             switch (state)
@@ -383,18 +340,18 @@ namespace Shuhari.WinTools.Gui.Views
             btnStop.IsEnabled = canStop;
         }
 
-        internal void ReportMessage(string msg)
+        public void ReportMessage(string msg)
         {
             sbiText.Content = msg;
         }
 
-        internal void ReportException(Exception exp)
+        public void ReportException(Exception exp)
         {
             MessageBox.Show(string.Format("Message={0}\r\nStack Trac={1}", exp.Message, exp.StackTrace));
             exp.LogToFile("{base}/error.log");
         }
 
-        internal void ReportPercentage(int percentage)
+        public void ReportPercentage(int percentage)
         {
             progress.Show(true);
             progress.Value = percentage;
@@ -405,7 +362,9 @@ namespace Shuhari.WinTools.Gui.Views
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch (((FileItem)((FrameworkElement)value).DataContext).GroupIndex % 3)
+            var groupIndex = System.Convert.ToInt32(value);
+            switch (groupIndex % 3)
+            // switch (((FileItem)((FrameworkElement)value).DataContext).GroupIndex % 3)
             {
                 case 0:
                     return Brushes.LightGreen;
@@ -440,7 +399,7 @@ namespace Shuhari.WinTools.Gui.Views
       ".ssa",
       ".srt",
         };
-        private readonly ImageFinderView _win;
+        private readonly IImageFinderUI _win;
         private readonly BackgroundWorker _worker;
         private readonly string[] _dirs;
         private int _totalFiles;
@@ -448,7 +407,7 @@ namespace Shuhari.WinTools.Gui.Views
         private List<FileItem> _files;
         private int _groupIndex;
 
-        public FinderTask(ImageFinderView win, string[] dirs)
+        public FinderTask(IImageFinderUI win, string[] dirs)
         {
             _win = win;
             _worker = new BackgroundWorker();
@@ -656,9 +615,11 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void FindDuplidateByHash2()
         {
-            foreach (IEnumerable<FileItem> source in _files.Where(f => f.Hash2 != null).GroupBy(f => f.Hash2).Where(g => g.Count() > 1))
+            foreach (var source in _files.Where(f => f.Hash2 != null)
+                .GroupBy(f => f.Hash2)
+                .Where(g => g.Count() > 1))
             {
-                FileItem[] files = Enumerable.ToArray<FileItem>(source);
+                var files = source.ToArray();
                 foreach (FileItem fileItem in files)
                 {
                     fileItem.GroupIndex = _groupIndex;
@@ -670,85 +631,4 @@ namespace Shuhari.WinTools.Gui.Views
         }
     }
 
-    public abstract class NotifyArgs : EventArgs
-    {
-        public abstract void Apply(ImageFinderView win);
-    }
-
-    internal class ChangeStateArgs : NotifyArgs
-    {
-        private readonly State _state;
-
-        public ChangeStateArgs(State state)
-        {
-            _state = state;
-        }
-
-        public override void Apply(ImageFinderView win)
-        {
-            win.EnterState(_state);
-        }
-    }
-
-    internal class StatusEventArgs : NotifyArgs
-    {
-        private readonly string _msg;
-
-        public StatusEventArgs(string format, params object[] args)
-        {
-            _msg = string.Format(format, args);
-        }
-
-        public override void Apply(ImageFinderView win)
-        {
-            win.ReportMessage(_msg);
-        }
-    }
-
-    internal class ExceptionArgs : NotifyArgs
-    {
-        private readonly Exception _exp;
-
-        public ExceptionArgs(Exception exp)
-        {
-            _exp = exp;
-        }
-
-        public override void Apply(ImageFinderView win)
-        {
-            win.ReportException(_exp);
-        }
-    }
-
-    internal class ProgressEventArgs : NotifyArgs
-    {
-        private int _percentage;
-
-        public ProgressEventArgs(int current, int total)
-        {
-            if (total <= 0)
-                return;
-            _percentage = (int)(current * 100L / total);
-        }
-
-        public override void Apply(ImageFinderView win)
-        {
-            win.ReportPercentage(_percentage);
-        }
-    }
-
-    internal class FoundGroupArgs : NotifyArgs
-    {
-        private FileItem[] _files;
-
-        public FoundGroupArgs(FileItem[] files)
-        {
-            _files = files;
-        }
-
-        public override void Apply(ImageFinderView win)
-        {
-            win.NotifyFound(_files);
-        }
-    }
 }
