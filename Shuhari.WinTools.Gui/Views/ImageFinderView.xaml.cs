@@ -393,11 +393,15 @@ namespace Shuhari.WinTools.Gui.Views
       ".avi",
       ".mp4",
       ".mpg",
+      ".mpeg",
       ".wmv",
+      ".rm",
+      ".rmvb",
       ".flv",
       ".mkv",
       ".ssa",
       ".srt",
+      ".ass",
         };
         private readonly IImageFinderUI _win;
         private readonly BackgroundWorker _worker;
