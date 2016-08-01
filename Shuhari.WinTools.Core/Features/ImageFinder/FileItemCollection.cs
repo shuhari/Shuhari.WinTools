@@ -70,7 +70,7 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
             bool changed = false;
             foreach (FileItem fileItem in this)
             {
-                if (fileItem.DirName == item.DirName && fileItem.Selected)
+                if (fileItem.DirName == item.DirName && fileItem.Selected != selected)
                 {
                     fileItem.Selected = selected;
                     changed = true;

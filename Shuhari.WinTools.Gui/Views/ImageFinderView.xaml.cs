@@ -187,19 +187,25 @@ namespace Shuhari.WinTools.Gui.Views
             if (index >= files.Length)
                 return;
             FileItem fileItem = files[index];
-            try
+            string[] imageExts = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+            string ext = Path.GetExtension(fileItem.Name) ?? "";
+            ext = ext.ToLowerInvariant();
+            if (imageExts.Contains(ext))
             {
-                byte[] buffer = File.ReadAllBytes(fileItem.GetFullPath());
-                BitmapImage bitmapImage2 = new BitmapImage();
-                bitmapImage2.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage2.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bitmapImage2.BeginInit();
-                bitmapImage2.StreamSource = new MemoryStream(buffer);
-                bitmapImage2.EndInit();
-                img.Source = bitmapImage2;
-            }
-            catch (Exception ex)
-            {
+                try
+                {
+                    byte[] buffer = File.ReadAllBytes(fileItem.GetFullPath());
+                    BitmapImage bitmapImage2 = new BitmapImage();
+                    bitmapImage2.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage2.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    bitmapImage2.BeginInit();
+                    bitmapImage2.StreamSource = new MemoryStream(buffer);
+                    bitmapImage2.EndInit();
+                    img.Source = bitmapImage2;
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
 
@@ -393,11 +399,15 @@ namespace Shuhari.WinTools.Gui.Views
       ".avi",
       ".mp4",
       ".mpg",
+      ".mpeg",
       ".wmv",
+      ".rm",
+      ".rmvb",
       ".flv",
       ".mkv",
       ".ssa",
       ".srt",
+      ".ass",
         };
         private readonly IImageFinderUI _win;
         private readonly BackgroundWorker _worker;
