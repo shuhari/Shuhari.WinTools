@@ -18,18 +18,18 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public FileCollection()
         {
-            this.IsChanged = false;
+            IsChanged = false;
         }
 
         public static FileCollection Load(DirectoryInfo dir)
         {
-            string filePath = FileCollection.GetFilePath(dir);
+            string filePath = GetFilePath(dir);
             if (!File.Exists(filePath))
                 return new FileCollection();
             try
             {
                 using (FileStream fileStream = File.OpenRead(filePath))
-                    return (FileCollection)XamlReader.Load((Stream)fileStream);
+                    return (FileCollection)XamlReader.Load(fileStream);
             }
             catch (Exception ex)
             {
@@ -39,11 +39,12 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public void Save(DirectoryInfo dir)
         {
-            string filePath = FileCollection.GetFilePath(dir);
+            string filePath = GetFilePath(dir);
             if (File.Exists(filePath))
                 File.Delete(filePath);
-            using (FileStream fileStream = File.OpenWrite(filePath))
-                XamlWriter.Save((object)this, (Stream)fileStream);
+            if (this.Count > 0)
+                using (FileStream fileStream = File.OpenWrite(filePath))
+                    XamlWriter.Save(this, fileStream);
         }
 
         private static string GetFilePath(DirectoryInfo dir)
@@ -53,17 +54,17 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public void AddItem(FileItem item)
         {
-            this.Add(item);
-            this.IsChanged = true;
+            Add(item);
+            IsChanged = true;
         }
 
         public void UpdateItem(FileItem updateItem)
         {
-            FileItem fileItem = this.GetItem(updateItem.Name);
+            FileItem fileItem = GetItem(updateItem.Name);
             if (fileItem == null)
                 return;
             fileItem.Update(updateItem);
-            this.IsChanged = true;
+            IsChanged = true;
         }
 
         public void RemoveItem(FileItem item)
@@ -71,13 +72,13 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
             FileItem fileItem = this.GetItem(item.Name);
             if (fileItem == null)
                 return;
-            this.Remove(fileItem);
-            this.IsChanged = true;
+            Remove(fileItem);
+            IsChanged = true;
         }
 
         public FileItem GetItem(string fileName)
         {
-            return Enumerable.FirstOrDefault<FileItem>((IEnumerable<FileItem>)this, (Func<FileItem, bool>)(f => f.MatchName(fileName)));
+            return this.FirstOrDefault(f => f.MatchName(fileName));
         }
     }
 }
