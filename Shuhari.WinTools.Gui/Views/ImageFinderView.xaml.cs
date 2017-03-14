@@ -570,12 +570,14 @@ namespace Shuhari.WinTools.Gui.Views
                     FileItem fileItem1 = fileCollection.GetItem(fi.Name);
                     if (fileItem1 == null)
                     {
+                        Notify(new StatusEventArgs("读取文件: {0}", fi.FullName));
                         FileItem fileItem2 = FileItem.Load(fi);
                         if (fileItem2 != null)
                             fileCollection.AddItem(fileItem2);
                     }
                     else if (fileItem1.IsChanged(fi))
                     {
+                        Notify(new StatusEventArgs("读取文件: {0}", fi.FullName));
                         FileItem updateItem = FileItem.Load(fi);
                         if (updateItem != null)
                             fileCollection.UpdateItem(updateItem);
