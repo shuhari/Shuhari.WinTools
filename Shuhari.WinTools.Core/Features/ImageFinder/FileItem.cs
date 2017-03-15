@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Shuhari.WinTools.Core.Features.ImageFinder
 {
@@ -35,7 +32,7 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
         {
             get
             {
-                if (this.Dir == null)
+                if (Dir == null)
                     return string.Empty;
                 return this.Dir.FullName;
             }
@@ -46,14 +43,14 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
         {
             get
             {
-                return this._selected;
+                return _selected;
             }
             set
             {
-                if (this._selected == value)
+                if (_selected == value)
                     return;
-                this._selected = value;
-                this.NotifyPropertyChanged("Selected");
+                _selected = value;
+                NotifyPropertyChanged("Selected");
             }
         }
 
@@ -61,73 +58,75 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public bool MatchName(string name)
         {
-            return name.ToLowerInvariant() == this.Name.ToLowerInvariant();
+            return name.Equals(Name, StringComparison.InvariantCultureIgnoreCase);
         }
+
+        private const long SIZE_LIMIT = 1024L * 1024L * 50;
 
         public static FileItem Load(FileInfo fi)
         {
-            FileItem fileItem = new FileItem();
+            var fileItem = new FileItem();
             fileItem.Name = fi.Name;
             fileItem.Size = fi.Length;
             fileItem.ModifyTime = fi.LastWriteTime;
-            if (fi.Length >= 10485760L)
+            if (fi.Length >= SIZE_LIMIT)
             {
-                using (FileStream fileStream = File.OpenRead(fi.FullName))
+                using (var fileStream = File.OpenRead(fi.FullName))
                 {
-                    fileItem.Hash = FileItem.GetStreamHash((Stream)fileStream, 0);
-                    fileItem.Hash2 = FileItem.GetStreamHash((Stream)fileStream, 256);
+                    fileItem.Hash = GetStreamHash(fileStream, 0);
+                    fileItem.Hash2 = GetStreamHash(fileStream, 256);
                 }
             }
             else
             {
                 byte[] content = File.ReadAllBytes(fi.FullName);
-                fileItem.Hash = FileItem.GetHash(content, 0);
-                fileItem.Hash2 = FileItem.GetHash(content, 256);
+                fileItem.Hash = GetHash(content, 0);
+                fileItem.Hash2 = GetHash(content, 256);
             }
             return fileItem;
         }
 
         public bool IsChanged(FileInfo fi)
         {
-            if (this.Size == fi.Length)
-                return this.ModifyTime != fi.LastWriteTime;
+            if (Size == fi.Length)
+                return ModifyTime != fi.LastWriteTime;
             return true;
         }
 
         public void Update(FileItem item)
         {
-            this.Size = item.Size;
-            this.ModifyTime = item.ModifyTime;
-            this.Hash = item.Hash;
-            this.Hash2 = item.Hash2;
+            Size = item.Size;
+            ModifyTime = item.ModifyTime;
+            Hash = item.Hash;
+            Hash2 = item.Hash2;
         }
 
         private static string GetHash(byte[] content, int offset)
         {
             if (offset > content.Length)
-                return (string)null;
+                return null;
             if (offset > 0)
             {
                 byte[] numArray = new byte[content.Length - offset];
-                Array.Copy((Array)content, offset, (Array)numArray, 0, numArray.Length);
+                Array.Copy(content, offset, numArray, 0, numArray.Length);
                 content = numArray;
             }
-            using (MD5CryptoServiceProvider cryptoServiceProvider = new MD5CryptoServiceProvider())
+            using (var cryptoServiceProvider = new MD5CryptoServiceProvider())
             {
                 byte[] hash = cryptoServiceProvider.ComputeHash(content);
                 cryptoServiceProvider.Clear();
-                return FileItem.ToHexString(hash);
+                return ToHexString(hash);
             }
         }
 
         private static string GetStreamHash(Stream stream, int offset)
         {
-            stream.Seek((long)offset, SeekOrigin.Begin);
-            using (MD5CryptoServiceProvider cryptoServiceProvider = new MD5CryptoServiceProvider())
+            stream.Seek(offset, SeekOrigin.Begin);
+            using (var cryptoServiceProvider = new MD5CryptoServiceProvider())
             {
                 byte[] hash = cryptoServiceProvider.ComputeHash(stream);
                 cryptoServiceProvider.Clear();
-                return FileItem.ToHexString(hash);
+                return ToHexString(hash);
             }
         }
 
@@ -141,14 +140,14 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public string GetFullPath()
         {
-            return Path.Combine(this.DirName, this.Name);
+            return Path.Combine(DirName, Name);
         }
 
         private void NotifyPropertyChanged(string propName)
         {
-            if (this.PropertyChanged == null)
+            if (PropertyChanged == null)
                 return;
-            this.PropertyChanged((object)this, new PropertyChangedEventArgs(propName));
+            PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
     }
 }

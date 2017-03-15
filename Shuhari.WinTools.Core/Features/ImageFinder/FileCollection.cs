@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -42,7 +41,7 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
             string filePath = GetFilePath(dir);
             if (File.Exists(filePath))
                 File.Delete(filePath);
-            if (this.Count > 0)
+            if (Count > 0)
                 using (FileStream fileStream = File.OpenWrite(filePath))
                     XamlWriter.Save(this, fileStream);
         }
@@ -69,7 +68,7 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public void RemoveItem(FileItem item)
         {
-            FileItem fileItem = this.GetItem(item.Name);
+            FileItem fileItem = GetItem(item.Name);
             if (fileItem == null)
                 return;
             Remove(fileItem);

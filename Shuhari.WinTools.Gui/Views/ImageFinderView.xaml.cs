@@ -321,7 +321,7 @@ namespace Shuhari.WinTools.Gui.Views
                 return (size / 1024.0 / 1024.0).ToString("F2") + " MB";
             if (size >= 1024L)
                 return (size / 1024.0).ToString("F2") + " KB";
-            return size.ToString() + "B";
+            return size + "B";
         }
 
         public void EnterState(State state)
@@ -362,7 +362,7 @@ namespace Shuhari.WinTools.Gui.Views
 
         public void ReportPercentage(int percentage)
         {
-            progress.Show(true);
+            progress.Show();
             progress.Value = percentage;
         }
     }
@@ -498,12 +498,12 @@ namespace Shuhari.WinTools.Gui.Views
                 ProcessDir(UpdateIndex);
                 _processFiles = 0;
                 _files = new List<FileItem>();
-                Notify(new StatusEventArgs("登记所有文件...", new object[0]));
+                Notify(new StatusEventArgs("登记所有文件..."));
                 ProcessDir(CollectFiles);
                 _groupIndex = 0;
-                Notify(new StatusEventArgs("按Hash分组...", new object[0]));
+                Notify(new StatusEventArgs("按Hash分组..."));
                 FindDuplidateByHash();
-                Notify(new StatusEventArgs("按Hash2分组...", new object[0]));
+                Notify(new StatusEventArgs("按Hash2分组..."));
                 FindDuplidateByHash2();
                 _files.Clear();
             }
