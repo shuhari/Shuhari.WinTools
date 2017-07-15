@@ -188,11 +188,11 @@ namespace Shuhari.WinTools.Gui.Views
             {
                 name = name.Replace(subStr, replaceWith);
             }
-            else if (type == 1 && name.StartsWith(subStr)) // Start with
+            else if (type == 1 && name.StartsWith(subStr, StringComparison.InvariantCultureIgnoreCase)) // Start with
             {
                 name = replaceWith + name.Substring(subStr.Length);
             }
-            else if (type == 2) // Ends with
+            else if (type == 2 && name.EndsWith(subStr, StringComparison.InvariantCultureIgnoreCase)) // Ends with
             {
                 name = name.Substring(0, name.Length - subStr.Length) + replaceWith;
             }
