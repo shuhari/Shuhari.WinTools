@@ -39,6 +39,7 @@ namespace Shuhari.WinTools.Gui.Views
             txtDir2.Text = configuration.AppSettings.Settings["imageFinder.dir2"].Value;
             txtDir3.Text = configuration.AppSettings.Settings["imageFinder.dir3"].Value;
             txtDir4.Text = configuration.AppSettings.Settings["imageFinder.dir4"].Value;
+            txtDir5.Text = configuration.AppSettings.Settings["imageFinder.dir5"].Value;
         }
 
         private State _state;
@@ -55,6 +56,7 @@ namespace Shuhari.WinTools.Gui.Views
             configuration.AppSettings.Settings["imageFinder.dir2"].Value = txtDir2.Text.Trim();
             configuration.AppSettings.Settings["imageFinder.dir3"].Value = txtDir3.Text.Trim();
             configuration.AppSettings.Settings["imageFinder.dir4"].Value = txtDir4.Text.Trim();
+            configuration.AppSettings.Settings["imageFinder.dir5"].Value = txtDir5.Text.Trim();
             configuration.Save();
 
             var dirs = new List<string>();
@@ -62,6 +64,7 @@ namespace Shuhari.WinTools.Gui.Views
             AddValidDir(dirs, txtDir2);
             AddValidDir(dirs, txtDir3);
             AddValidDir(dirs, txtDir4);
+            AddValidDir(dirs, txtDir5);
             if (dirs.Count > 0)
             {
                 if (_files != null)

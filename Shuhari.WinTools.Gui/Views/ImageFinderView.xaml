@@ -35,6 +35,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -47,6 +49,8 @@
             <TextBox x:Name="txtDir3" Margin="3" Grid.Row="0" Grid.Column="5"/>
             <Label Content="目录4" Margin="3" Grid.Row="0" Grid.Column="6"/>
             <TextBox x:Name="txtDir4" Margin="3" Grid.Row="0" Grid.Column="7"/>
+            <Label Content="目录4" Margin="3" Grid.Row="0" Grid.Column="8"/>
+            <TextBox x:Name="txtDir5" Margin="3" Grid.Row="0" Grid.Column="9"/>
         </Grid>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem x:Name="sbiPercent" Margin="2" Width="160">
