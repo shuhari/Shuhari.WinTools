@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -496,9 +498,9 @@ namespace Shuhari.WinTools.Gui.Views
             try
             {
                 _totalFiles = 0;
-                ProcessDir(CountFiles);
+                ProcessDir(CountFiles, true);
                 _processFiles = 0;
-                ProcessDir(UpdateIndex);
+                ProcessDir(UpdateIndex, true);
                 _processFiles = 0;
                 _files = new List<FileItem>();
                 Notify(new StatusEventArgs("登记所有文件..."));
@@ -529,10 +531,26 @@ namespace Shuhari.WinTools.Gui.Views
         {
         }
 
-        private void ProcessDir(Action<DirectoryInfo> handler)
+        private void ProcessDir(Action<DirectoryInfo> handler, bool async = false)
         {
-            foreach (string path in _dirs)
-                ProcessDir(new DirectoryInfo(path), handler);
+            if (async)
+            {
+                var tasks = new Task[_dirs.Length];
+                for (var i = 0; i < _dirs.Length; i++)
+                {
+                    var path = _dirs[i];
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        ProcessDir(new DirectoryInfo(path), handler);
+                    });
+                }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                foreach (var path in _dirs)
+                    ProcessDir(new DirectoryInfo(path), handler);
+            }
         }
 
         private void ProcessDir(DirectoryInfo di, Action<DirectoryInfo> handler)
@@ -553,7 +571,7 @@ namespace Shuhari.WinTools.Gui.Views
             try
             {
                 Notify(new StatusEventArgs("搜索目录 {0} ...", new object[] { di.FullName }));
-                _totalFiles += GetFiles(di).Length;
+                Interlocked.Add(ref _totalFiles, GetFiles(di).Length);
             }
             catch(Exception exp)
             {
@@ -590,7 +608,7 @@ namespace Shuhari.WinTools.Gui.Views
                     fileCollection.RemoveItem(fileItem);
                 if (fileCollection.IsChanged)
                     fileCollection.Save(dir);
-                _processFiles += files.Length;
+                Interlocked.Add(ref _processFiles, files.Length);
                 Notify(new ProgressEventArgs(_processFiles, _totalFiles));
             }
             catch(Exception exp)
