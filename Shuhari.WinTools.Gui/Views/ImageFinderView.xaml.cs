@@ -628,8 +628,9 @@ namespace Shuhari.WinTools.Gui.Views
             foreach (FileItem fileItem in fileCollection)
             {
                 fileItem.Dir = dir;
-                _files.Add(fileItem);
+                // _files.Add(fileItem);
             }
+            _files.AddRange(fileCollection);
             _processFiles += fileCollection.Count;
             Notify(new ProgressEventArgs(_processFiles, _totalFiles));
         }
