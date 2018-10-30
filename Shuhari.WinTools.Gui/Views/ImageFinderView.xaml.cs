@@ -113,10 +113,13 @@ namespace Shuhari.WinTools.Gui.Views
             int failedCount = 0;
             int dirCount = 0;
             long size = 0;
+            var fileNames = fileItemArray.Select(x => x.GetFullPath()).ToArray();
+            DeleteFiles(fileNames);
             for (int index = fileItemArray.Length - 1; index >= 0; --index)
             {
                 FileItem file = fileItemArray[index];
-                if (DeleteFile(file))
+                if (!File.Exists(file.GetFullPath()))
+                // if (DeleteFile(file))
                 {
                     _files.Remove(file);
                     ++successCount;
@@ -285,6 +288,24 @@ namespace Shuhari.WinTools.Gui.Views
                 wFunc = ShellApi.FileFuncFlags.FO_DELETE,
                 fFlags = ShellApi.FILEOP_FLAGS.FOF_ALLOWUNDO | ShellApi.FILEOP_FLAGS.FOF_NOCONFIRMATION,
                 pFrom = file.GetFullPath() + char.MinValue + char.MinValue
+            };
+            return ShellApi.SHFileOperation(ref sfo) == 0;
+        }
+
+        private bool DeleteFiles(string[] filePaths)
+        {
+            var totalSize = filePaths.Sum(x => x.Length + 1) + 1;
+            var sb = new System.Text.StringBuilder(totalSize);
+            foreach (var filePath in filePaths)
+            {
+                sb.Append(filePath + '\0');
+            }
+            sb.Append('\0');
+            var sfo = new ShellApi.SHFILEOPSTRUCT()
+            {
+                wFunc = ShellApi.FileFuncFlags.FO_DELETE,
+                fFlags = ShellApi.FILEOP_FLAGS.FOF_ALLOWUNDO | ShellApi.FILEOP_FLAGS.FOF_NOCONFIRMATION,
+                pFrom = sb.ToString()
             };
             return ShellApi.SHFileOperation(ref sfo) == 0;
         }
