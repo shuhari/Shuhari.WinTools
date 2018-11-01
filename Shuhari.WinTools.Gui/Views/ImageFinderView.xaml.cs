@@ -124,7 +124,7 @@ namespace Shuhari.WinTools.Gui.Views
                     _files.Remove(file);
                     ++successCount;
                     size += file.Size;
-                    if (CleanDir(file.DirName))
+                    if (Directory.Exists(file.DirName) && CleanDir(file.DirName))
                         ++dirCount;
                 }
                 else
