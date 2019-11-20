@@ -113,19 +113,21 @@ namespace Shuhari.WinTools.Gui.Views
                 CleanDir(subDi);
             }
 
-            var filesToDelete = SafeGetFiles(di)
-                .Where(IsDeletableFile)
-                .ToArray();
-            foreach (var fi in filesToDelete)
+            var allFiles = SafeGetFiles(di);
+            var filesToDelete = allFiles.Where(IsDeletableFile).ToArray();
+            if (filesToDelete.Length == allFiles.Length)
             {
-                try
+                foreach (var fi in filesToDelete)
                 {
-                    fi.Delete();
-                }
-                catch (Exception exp)
-                {
-                    var log = string.Format("删除文件失败: {0}, 原因={1}", fi.FullName, exp.Message);
-                    _worker.ReportProgress(0, log);
+                    try
+                    {
+                        fi.Delete();
+                    }
+                    catch (Exception exp)
+                    {
+                        var log = string.Format("删除文件失败: {0}, 原因={1}", fi.FullName, exp.Message);
+                        _worker.ReportProgress(0, log);
+                    }
                 }
             }
 
@@ -147,7 +149,7 @@ namespace Shuhari.WinTools.Gui.Views
 
         private bool IsDeletableFile(FileInfo fi)
         {
-            string[] names = { "Thumbs.db" };
+            string[] names = { "Thumbs.db", "imgfind.hash.xml" };
             foreach (var name in names)
             {
                 if (fi.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))

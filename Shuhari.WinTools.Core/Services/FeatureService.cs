@@ -17,7 +17,6 @@ namespace Shuhari.WinTools.Core.Services
 
             var featureJson = assembly.GetResourceText("Resources/features.json", Encoding.UTF8);
             var metadatas = JsonConvert.DeserializeObject<FeatureMetadata[]>(featureJson);
-
             foreach (var metadata in metadatas)
             {
                 var type = assembly.GetType(metadata.FeatureClass);

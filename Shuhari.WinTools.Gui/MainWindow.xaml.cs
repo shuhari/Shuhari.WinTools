@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Shuhari.WinTools.Core.Features;
 using Shuhari.WinTools.Gui.Services;
@@ -16,11 +17,15 @@ namespace Shuhari.WinTools.Gui
             InitializeComponent();
 
             Loaded += MainWindow_Loaded;
+            System.Console.WriteLine("Hello");
         }
 
         private BaseFeature[] _features;
         private ApplicationService _service;
 
+        /// <summary>
+        /// print hello world
+        /// </summary>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _service = new ApplicationService();
