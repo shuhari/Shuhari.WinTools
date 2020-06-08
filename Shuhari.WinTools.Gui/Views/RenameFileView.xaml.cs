@@ -93,7 +93,7 @@ namespace Shuhari.WinTools.Gui.Views
             {
                 foreach (var fi in di.GetFiles())
                 {
-                    var newName = option.GetNewName(fi.Name);
+                    var newName = option.GetNewName(fi.Name, false);
                     if (newName != fi.Name)
                     {
                         _items.Add(new RenameItem(fi.Name, newName, fi.DirectoryName));
@@ -103,7 +103,7 @@ namespace Shuhari.WinTools.Gui.Views
 
             if (option.ApplyToDirectory && di.FullName.Length != 3)
             {
-                var newName = option.GetNewName(di.Name);
+                var newName = option.GetNewName(di.Name, true);
                 if (newName != di.Name)
                     _items.Add(new RenameItem(di.Name, newName, di.Parent.FullName));
             }
@@ -168,15 +168,25 @@ namespace Shuhari.WinTools.Gui.Views
 
         public string Replace3 { get; set; }
 
-        public string GetNewName(string name)
+        public string GetNewName(string name, bool isDir)
         {
-            var namePart = Path.GetFileNameWithoutExtension(name);
-            var extPart = Path.GetExtension(name);
+            if (isDir)
+            {
+                string result = Replace(name, Option1, Type1, Replace1);
+                result = Replace(result, Option2, Type2, Replace2);
+                result = Replace(result, Option3, Type3, Replace3);
+                return result;
+            }
+            else
+            {
+                var namePart = Path.GetFileNameWithoutExtension(name);
+                var extPart = Path.GetExtension(name);
 
-            namePart = Replace(namePart, Option1, Type1, Replace1);
-            namePart = Replace(namePart, Option2, Type2, Replace2);
-            namePart = Replace(namePart, Option3, Type3, Replace3);
-            return string.Format("{0}{1}", namePart, extPart);
+                namePart = Replace(namePart, Option1, Type1, Replace1);
+                namePart = Replace(namePart, Option2, Type2, Replace2);
+                namePart = Replace(namePart, Option3, Type3, Replace3);
+                return string.Format("{0}{1}", namePart, extPart);
+            }
         }
 
         private string Replace(string name, string subStr, int type, string replaceWith)

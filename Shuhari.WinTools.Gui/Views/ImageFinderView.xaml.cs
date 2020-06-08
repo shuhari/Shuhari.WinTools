@@ -425,6 +425,8 @@ namespace Shuhari.WinTools.Gui.Views
       ".png",
       ".bmp",
       ".gif",
+      ".webp",
+      ".psd",
       ".avi",
       ".mp4",
       ".mpg",
@@ -437,6 +439,18 @@ namespace Shuhari.WinTools.Gui.Views
       ".ssa",
       ".srt",
       ".ass",
+      ".webm",
+      ".ogm",
+      ".m4v",
+      ".mov",
+      ".flv",
+      ".asf",
+      ".mpv",
+      ".mts",
+      ".ogv",
+      ".3gp",
+      ".divx",
+      ".ts",
         };
         private readonly IImageFinderUI _win;
         private readonly BackgroundWorker _worker;
