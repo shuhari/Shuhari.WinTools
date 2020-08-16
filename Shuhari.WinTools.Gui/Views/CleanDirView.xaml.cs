@@ -79,7 +79,16 @@ namespace Shuhari.WinTools.Gui.Views
         {
             string baseDir = (string)e.Argument;
 
-            CleanDir(new DirectoryInfo(baseDir));
+            var di = new DirectoryInfo(baseDir);
+            try
+            {
+                CleanDir(di);
+            }
+            catch(PathTooLongException exp)
+            {
+                var log = string.Format("清理目录失败: {0}, 原因={1}", di.FullName, exp.Message);
+                _worker.ReportProgress(0, log);
+            }
         }
 
         private DirectoryInfo[] SafeGetDirectories(DirectoryInfo di)
@@ -108,6 +117,9 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void CleanDir(DirectoryInfo di)
         {
+            if (di.Name.Contains("Disharmonica - Yoshino"))
+                System.Diagnostics.Debug.WriteLine("Debug here");
+
             foreach (var subDi in SafeGetDirectories(di))
             {
                 CleanDir(subDi);
