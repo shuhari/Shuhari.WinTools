@@ -119,7 +119,6 @@ namespace Shuhari.WinTools.Gui.Views
             {
                 FileItem file = fileItemArray[index];
                 if (!File.Exists(file.GetFullPath()))
-                // if (DeleteFile(file))
                 {
                     _files.Remove(file);
                     ++successCount;
@@ -216,6 +215,7 @@ namespace Shuhari.WinTools.Gui.Views
                 }
                 catch (Exception ex)
                 {
+                    ex.LogToFile("{base}/error.log");
                 }
             }
         }
@@ -336,6 +336,14 @@ namespace Shuhari.WinTools.Gui.Views
                 }
                 catch (Exception ex)
                 {
+                    try
+                    {
+                        throw new ApplicationException(string.Format("Delete dir failed: {0}", dirName), ex);
+                    }
+                    catch (Exception inner)
+                    {
+                        inner.LogToFile("{base}/error.log");
+                    }
                 }
             }
             return false;
@@ -375,9 +383,16 @@ namespace Shuhari.WinTools.Gui.Views
             btnStop.IsEnabled = canStop;
         }
 
+        private DateTime _lastReportTime = DateTime.MinValue;
+
         public void ReportMessage(string msg)
         {
-            sbiText.Content = msg;
+            // Avoid report too ofen
+            if (DateTime.Now - _lastReportTime >= TimeSpan.FromSeconds(0.5))
+            {
+                sbiText.Content = msg;
+                _lastReportTime = DateTime.Now;
+            }
         }
 
         public void ReportException(Exception exp)
@@ -480,7 +495,7 @@ namespace Shuhari.WinTools.Gui.Views
             }
             catch(Exception exp)
             {
-                // TODO Log exception
+                exp.LogToFile("{base}/error.log");
                 Console.WriteLine(exp.Message);
                 return new FileInfo[0];
             }
@@ -494,7 +509,7 @@ namespace Shuhari.WinTools.Gui.Views
             }
             catch(Exception exp)
             {
-                // TODO Log exception
+                exp.LogToFile("{base}/error.log");
                 Console.WriteLine(exp.Message);
                 return new DirectoryInfo[0];
             }
@@ -524,8 +539,8 @@ namespace Shuhari.WinTools.Gui.Views
 
         public void Stop()
         {
-            _worker.CancelAsync();
             Notify(new ChangeStateArgs(State.Stopped));
+            _worker.CancelAsync();
         }
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
@@ -549,6 +564,7 @@ namespace Shuhari.WinTools.Gui.Views
             }
             catch (Exception ex)
             {
+                ex.LogToFile("{base}/error.log");
                 Notify(new ExceptionArgs(ex));
             }
             Notify(new ChangeStateArgs(State.Stopped));
@@ -576,7 +592,15 @@ namespace Shuhari.WinTools.Gui.Views
                     var path = _dirs[i];
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        ProcessDir(new DirectoryInfo(path), handler);
+                        try
+                        {
+                            ProcessDir(new DirectoryInfo(path), handler);
+                        }
+                        catch(Exception exp)
+                        {
+                            Console.WriteLine(exp.Message);
+                            exp.LogToFile("{base}/error.log");
+                        }
                     });
                 }
                 Task.WaitAll(tasks);
@@ -611,6 +635,7 @@ namespace Shuhari.WinTools.Gui.Views
             catch(Exception exp)
             {
                 Console.WriteLine(exp.Message);
+                exp.LogToFile("{base}/error.log");
             }
         }
 
@@ -649,6 +674,7 @@ namespace Shuhari.WinTools.Gui.Views
             catch(Exception exp)
             {
                 Console.WriteLine(exp.Message);
+                exp.LogToFile("{base}/error.log");
             }
         }
 

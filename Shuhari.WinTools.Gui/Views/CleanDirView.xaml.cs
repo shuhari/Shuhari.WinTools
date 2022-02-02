@@ -117,9 +117,6 @@ namespace Shuhari.WinTools.Gui.Views
 
         private void CleanDir(DirectoryInfo di)
         {
-            if (di.Name.Contains("Disharmonica - Yoshino"))
-                System.Diagnostics.Debug.WriteLine("Debug here");
-
             foreach (var subDi in SafeGetDirectories(di))
             {
                 CleanDir(subDi);

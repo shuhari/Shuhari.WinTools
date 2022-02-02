@@ -42,8 +42,17 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
             if (File.Exists(filePath))
                 File.Delete(filePath);
             if (Count > 0)
-                using (FileStream fileStream = File.OpenWrite(filePath))
-                    XamlWriter.Save(this, fileStream);
+            {
+                try
+                {
+                    using (FileStream fileStream = File.OpenWrite(filePath))
+                        XamlWriter.Save(this, fileStream);
+                }
+                catch (Exception exp)
+                {
+                    throw new ApplicationException(string.Format("Save xaml failed, filePath={0}", filePath), exp);
+                }
+            }
         }
 
         private static string GetFilePath(DirectoryInfo dir)

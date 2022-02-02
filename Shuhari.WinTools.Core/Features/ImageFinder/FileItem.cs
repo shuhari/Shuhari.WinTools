@@ -88,9 +88,11 @@ namespace Shuhari.WinTools.Core.Features.ImageFinder
 
         public bool IsChanged(FileInfo fi)
         {
-            if (Size == fi.Length)
-                return ModifyTime != fi.LastWriteTime;
-            return true;
+            if (Size != fi.Length)
+                return true;
+            if (ModifyTime != fi.LastWriteTime)
+                return true;
+            return false;
         }
 
         public void Update(FileItem item)
